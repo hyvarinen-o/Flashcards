@@ -1,7 +1,8 @@
 CREATE TABLE Users(
     id INTEGER PRIMARY KEY,
-    username TEXT UNIQUE,
-    password_hash TEXT,
+    username TEXT UNIQUE NOT NULL,
+    created_at TEXT,
+    password_hash TEXT NOT NULL,
     image BLOB
 );
 
@@ -23,11 +24,18 @@ CREATE TABLE Cards(
 
 CREATE TABLE Categories(
     id INTEGER PRIMARY KEY,
-    category TEXT;
+    category TEXT
 );
 
 CREATE TABLE Sub_categories(
     id INTEGER PRIMARY KEY,
     sub_category TEXT,
     category_id INTEGER REFERENCES Categories
+);
+
+CREATE TABLE Comments(
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER REFERENCES Users,
+    content TEXT,
+    deck_id INTEGER REFERENCES Decks
 );
