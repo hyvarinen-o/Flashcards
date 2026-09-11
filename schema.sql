@@ -8,34 +8,42 @@ CREATE TABLE Users(
 
 CREATE TABLE Decks(
     id INTEGER PRIMARY KEY,
-    name TEXT,
+    name TEXT NOT NULL,
     description TEXT,
-    user_id INTEGER REFERENCES Users,
-    categories TEXT
+    user_id INTEGER NOT NULL REFERENCES Users,
+    created_at TEXT NOT NULL 
 );
 
 CREATE TABLE Cards(
     id INTEGER PRIMARY KEY,
-    question TEXT,
-    answer TEXT,
-    deck_id INTEGER REFERENCES Decks,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    deck_id INTEGER NOT NULL REFERENCES Decks,
     image BLOB
 );
 
 CREATE TABLE Categories(
     id INTEGER PRIMARY KEY,
-    category TEXT
+    category TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE Sub_categories(
+CREATE TABLE Category_options(
     id INTEGER PRIMARY KEY,
-    sub_category TEXT,
-    category_id INTEGER REFERENCES Categories
+    category_option TEXT UNIQUE NOT NULL,
+    category_id INTEGER NOT NULL REFERENCES Categories
+    UNIQUE (category_id, category_option)
 );
+
+CREATE TABLE Decks_category_options(
+    deck_id INTEGER NOT NULL REFERENCES Decks
+    option_id INTEGER NOT NULL REFERENCES Category_options
+    PRIMARY KEY (deck_id, option_id)
+)
 
 CREATE TABLE Comments(
     id INTEGER PRIMARY KEY,
-    user_id INTEGER REFERENCES Users,
-    content TEXT,
-    deck_id INTEGER REFERENCES Decks
+    user_id INTEGER NOT NULL REFERENCES Users,
+    content TEXT NOT NULL,
+    deck_id INTEGER NOT NULL REFERENCES Decks
+    created_at TEXT
 );
