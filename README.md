@@ -8,4 +8,4 @@
 * Käyttäjä pystyy etsimään korttipakkoja hakusanalla.
 * Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät korttipakat.
 * Käyttäjä pystyy valitsemaan korttipakalle yhden tai useamman luokittelun (esim. kielet, termit, kuva/sana yhteydet).
-* Käyttäjä pystyy lisäämään julkisiin yhteisön korttipakkoihin "extra kortteja"
+* Toissijaiseksi tietokohteeksi käyttäjät pystyvät lisäämään pakkoihin arvostelun.
