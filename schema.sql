@@ -30,20 +30,20 @@ CREATE TABLE Categories(
 CREATE TABLE Category_options(
     id INTEGER PRIMARY KEY,
     category_option TEXT UNIQUE NOT NULL,
-    category_id INTEGER NOT NULL REFERENCES Categories
+    category_id INTEGER NOT NULL REFERENCES Categories,
     UNIQUE (category_id, category_option)
 );
 
 CREATE TABLE Decks_category_options(
-    deck_id INTEGER NOT NULL REFERENCES Decks
-    option_id INTEGER NOT NULL REFERENCES Category_options
+    deck_id INTEGER NOT NULL REFERENCES Decks,
+    option_id INTEGER NOT NULL REFERENCES Category_options,
     PRIMARY KEY (deck_id, option_id)
-)
+);
 
 CREATE TABLE Comments(
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES Users,
     content TEXT NOT NULL,
-    deck_id INTEGER NOT NULL REFERENCES Decks
+    deck_id INTEGER NOT NULL REFERENCES Decks,
     created_at TEXT
 );
