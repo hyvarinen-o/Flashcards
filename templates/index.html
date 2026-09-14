@@ -5,9 +5,20 @@
 </head>
 
 <body>
-    <h1>Welcome</h1>
+    {% if session.username %}
+    <h1>Welcome {{session.username}}</h1>
+    <p>Sign out</p>
+    <form action="/logout" method="post">
+        <button>logout</button>
+    </form>
+    {% else %}
     <p><b>Sign in</b></p>
     <form action="/register">
         <button>sign in</button>
     </form>
+    <p><b>Log in</b></p>
+    <form action="/login_page">
+        <button>Log in</button>
+    </form>
+    {% endif %}
 </body>
