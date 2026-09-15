@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <title>{{deck.name}}</title>
+</head>
+
+<body>
+    <h1>{{deck.name}}</h1>
+    <h2>by {{deck.username}}</h2>
+    <p>created at {{deck.created_at}}</p>
+    <p>Cards:</p>
+
+    {% for card in cards %}
+    <p>
+        question: {{card.question}}, answer: {{card.answer}}
+    </p>
+    {% endfor %}
+
+    {% if session["user_id"] == deck.user_id %}
+
+    <a href="/new_card/{{deck_id}}">add new cards</a>
+    {% endif %}
+</body>
