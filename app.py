@@ -72,3 +72,8 @@ def create_deck():
     thread_id = decks.create_deck(name, description, session["user_id"])
     return redirect("/deck/" + str(thread_id))
 
+@app.route("/deck/<int:deck_id>")
+def show_deck(deck_id):
+    deck = decks.get_deck(deck_id)
+    cards = decks.get_cards(deck_id)
+    return render_template("deck.html", deck=deck, cards=cards)

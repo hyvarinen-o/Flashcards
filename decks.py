@@ -9,6 +9,18 @@ def get_decks():
 
     return db.query(sql)
 
+def get_deck(deck_id):
+    sql = """SELECT d.id, d.name, d.description, d.created_at, u.username
+            FROM Decks d JOIN Users u
+            WHERE d.id = ? AND d.user_id = u.id"""
+    return db.query(sql, params=[deck_id])[0]
+
+
+def get_cards(deck_id):
+    sql = "SELECT * FROM Cards WHERE deck_id = ?"
+    return db.query(sql, params=[deck_id])
+
+
 def create_deck(name, description, user_id):
     sql = "INSERT INTO Decks (name, description, user_id) VALUES (?, ?, ?)"
     db.execute(sql, params=[name, description, user_id])
