@@ -56,3 +56,8 @@ def login():
 def logout():
     del session["username"]
     return redirect("/")
+
+
+@app.route("/new_deck")
+def new_deck():
+    return render_template("new_deck.html")
