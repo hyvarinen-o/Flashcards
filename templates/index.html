@@ -11,14 +11,21 @@
     <form action="/logout" method="post">
         <button>logout</button>
     </form>
+    <form action="/new_deck" method="post">
+        <button>New flashcard deck</button>
+    </form>
+
     {% else %}
+    <h1><b>Flashcards</b></h1> 
     <p><b>Sign in</b></p>
     <form action="/register">
-        <button>sign in</button>
+        <button>Here</button>
     </form>
+    <p>or</p>
     <p><b>Log in</b></p>
     <form action="/login_page">
-        <button>Log in</button>
+        <button>Here</button>
     </form>
+
     {% endif %}
 </body>
