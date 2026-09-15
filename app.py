@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
-import db
+import db, decks
 from flask import session
 import config
 
@@ -43,11 +43,13 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    sql = "SELECT password_hash FROM Users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
-
+    sql = "SELECT id, password_hash FROM Users WHERE username = ?"
+    session_query = db.query(sql, [username])[0]
+    password_hash = session_query[1]
+    user_id = session_query[0]
     if check_password_hash(password_hash, password):
         session["username"] = username
+        session["user_id"] = user_id
         return redirect("/")
     else:
         return "Wrong username or password"
@@ -55,9 +57,18 @@ def login():
 @app.route("/logout", methods=["POST"])
 def logout():
     del session["username"]
+    del session["user_id"]
     return redirect("/")
 
 
 @app.route("/new_deck")
 def new_deck():
     return render_template("new_deck.html")
+
+@app.route("/create_deck")
+def create_deck():
+    name = request.form["name"]
+    description = request.form["description"]
+    thread_id = decks.create_deck(name, description, session["user_id"])
+    return redirect("/deck/" + str(thread_id))
+
