@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, datetime
 from flask import Flask
 from flask import redirect, render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,7 +11,8 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    deck_list = decks.get_decks()
+    return render_template("index.html", deck_list=deck_list)
 
 
 @app.route("/register")
@@ -65,11 +66,11 @@ def logout():
 def new_deck():
     return render_template("new_deck.html")
 
-@app.route("/create_deck")
+@app.route("/create_deck", methods=["POST"])
 def create_deck():
     name = request.form["name"]
     description = request.form["description"]
-    thread_id = decks.create_deck(name, description, session["user_id"])
+    thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
     return redirect("/deck/" + str(thread_id))
 
 @app.route("/deck/<int:deck_id>")

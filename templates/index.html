@@ -28,4 +28,13 @@
     </form>
 
     {% endif %}
+
+    <h2><b>Decks</b></h2>
+    {% for deck in deck_list %}
+    <hr />
+    <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
+    <p>{{ deck.description }}</p>
+    <p>by {{ deck.username }} at {{ deck.created_at }}</p>
+    {% endfor %}
+    </p>
 </body>

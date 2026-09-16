@@ -1,12 +1,10 @@
 import db
 
 def get_decks():
-    sql = """SELECT d.id, d.name, d.description, COUNT(c.id) total, d.created_at
-            FROM Decks d, Cards c
-            WHERE c.deck_id = d.id
+    sql = """SELECT d.id, d.name, d.description, COUNT(c.id) AS total, d.created_at
+            FROM Decks d LEFT JOIN Cards c ON c.deck_id = d.id
             GROUP BY d.id
             ORDER BY d.id DESC"""
-
     return db.query(sql)
 
 def get_deck(deck_id):
@@ -21,9 +19,9 @@ def get_cards(deck_id):
     return db.query(sql, params=[deck_id])
 
 
-def create_deck(name, description, user_id):
-    sql = "INSERT INTO Decks (name, description, user_id) VALUES (?, ?, ?)"
-    db.execute(sql, params=[name, description, user_id])
+def create_deck(name, description, user_id, created_at):
+    sql = "INSERT INTO Decks (name, description, user_id, created_at) VALUES (?, ?, ?, ?)"
+    db.execute(sql, params=[name, description, user_id, created_at])
     deck_id = db.last_insert_id()
     return deck_id
 
