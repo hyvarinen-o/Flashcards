@@ -15,8 +15,20 @@
     </p>
     {% endfor %}
 
-    {% if session["user_id"] == deck.user_id %}
+    {% if session["user_id"] == deck.user_id  and new_card == False%}
 
-    <a href="/new_card/{{deck_id}}">add new cards</a>
+    <a href="/new_card_form/{{ deck.id }}">add new cards</a>
+
+    {% elif session["user_id"] == deck.user_id and new_card == True%}
+
+    <form action="/add_card" method="post">
+        <p>New card:</p>
+        Question:<input type="text" name="question" />
+        Answer:<input type="text" name="answer" />
+        <input type="hidden" value="{{ deck.id }}" name="deck_id" />
+        <input type="submit" value="Submit"/>
+    </form>
+
+
     {% endif %}
 </body>

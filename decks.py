@@ -30,4 +30,4 @@ def create_deck(name, description, user_id):
 def add_card(question, answer, deck_id):
     sql = "INSERT INTO Cards (question, answer, deck_id) VALUES (?, ?, ?)"
     db.execute(sql, params=[question, answer, deck_id])
-
+    return True

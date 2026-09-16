@@ -76,4 +76,18 @@ def create_deck():
 def show_deck(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
-    return render_template("deck.html", deck=deck, cards=cards)
+    return render_template("deck.html", deck=deck, cards=cards, new_card=False)
+
+@app.route("/new_card_form/<int:deck_id>")
+def add_card_form(deck_id):
+    deck = decks.get_deck(deck_id)
+    cards = decks.get_cards(deck_id)
+    return render_template("deck.html", deck=deck, cards=cards, new_card=True)
+
+@app.route("/add_card", methods=["POST"])
+def add_card():
+    question = request.form["question"]
+    answer = request.form["answer"]
+    deck_id = request.form["deck_id"]
+    decks.add_card(question, answer, deck_id)
+    return redirect("/deck/" + str(deck_id))
