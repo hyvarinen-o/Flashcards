@@ -8,7 +8,7 @@ def get_decks():
     return db.query(sql)
 
 def get_deck(deck_id):
-    sql = """SELECT d.id, d.name, d.description, d.created_at, u.username
+    sql = """SELECT d.id, d.name, d.description, d.user_id, d.created_at, u.username
             FROM Decks d JOIN Users u
             WHERE d.id = ? AND d.user_id = u.id"""
     return db.query(sql, params=[deck_id])[0]
