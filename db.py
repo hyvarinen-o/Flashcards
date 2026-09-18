@@ -10,10 +10,12 @@ def get_connection():
 
 def execute(sql, params=[]):
     con = get_connection()
-    result = con.execute(sql, params)
+    curson = con.execute(sql, params)
+    result = curson.fetchall()
     con.commit()
-    g.last_insert_id = result.lastrowid
+    g.last_insert_id = curson.lastrowid
     con.close()
+    return result
 
 def last_insert_id():
     return g.last_insert_id

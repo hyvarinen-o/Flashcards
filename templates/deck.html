@@ -16,7 +16,9 @@
     {% endfor %}
 
     {% if session["user_id"] == deck.user_id  and new_card == False%}
-    <a href="/new_card_form/{{ deck.id }}">add new cards</a>
+    <a href="/new_card_form/{{ deck.id }}">Add new cards</a>
+    <p></p>
+    <a href="/edit_deck/{{ deck.id }}">edit cards</a>
     {% elif session["user_id"] == deck.user_id and new_card == True%}
 
     <form action="/add_card" method="post">

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head>
+    <title>Edit deck</title>
+</head>
+
+<body>
+    <h1><b>Edit cards:</b></h1>
+    {% for card in cards %}
+    <hr />
+    <p>Question: {{ card.question }}, Answer: {{ card.answer }}</p>
+    <form action="/edit_card/delete/{{ card.id }}" method="post">
+        <input type="submit" value="delete" />
+    </form>
+    {% endfor %}
+</body>

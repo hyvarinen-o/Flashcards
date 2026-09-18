@@ -29,3 +29,8 @@ def add_card(question, answer, deck_id):
     sql = "INSERT INTO Cards (question, answer, deck_id) VALUES (?, ?, ?)"
     db.execute(sql, params=[question, answer, deck_id])
     return True
+
+def delete_card(card_id):
+    sql = "DELETE FROM Cards WHERE id = ? RETURNING deck_id"
+    deck_id = db.execute(sql, [card_id])
+    return deck_id[0][0]

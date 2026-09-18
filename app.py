@@ -92,3 +92,14 @@ def add_card():
     deck_id = request.form["deck_id"]
     decks.add_card(question, answer, deck_id)
     return redirect("/deck/" + str(deck_id))
+
+
+@app.route("/edit_deck/<int:deck_id>")
+def edit_cards(deck_id):
+    cards = decks.get_cards(deck_id)
+    return render_template("edit_deck.html", cards=cards)
+
+@app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
+def delete_card(card_id):
+    deck_id = decks.delete_card(card_id)
+    return redirect("/edit_deck/" + str(deck_id))
