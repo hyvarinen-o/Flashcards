@@ -5,6 +5,7 @@
 
 <body>
     <h1><b>Edit cards:</b></h1>
+    <a href="/deck/{{ deck_id }}" type="button">Go back</a>
     {% for card in cards %}
     <hr />
     <p>Question: {{ card.question }}, Answer: {{ card.answer }}</p>

@@ -97,7 +97,7 @@ def add_card():
 @app.route("/edit_deck/<int:deck_id>")
 def edit_cards(deck_id):
     cards = decks.get_cards(deck_id)
-    return render_template("edit_deck.html", cards=cards)
+    return render_template("edit_deck.html", cards=cards, deck_id=deck_id)
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
