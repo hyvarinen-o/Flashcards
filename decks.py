@@ -34,3 +34,8 @@ def delete_card(card_id):
     sql = "DELETE FROM Cards WHERE id = ? RETURNING deck_id"
     deck_id = db.execute(sql, [card_id])
     return deck_id[0][0]
+
+def update_card(card_id, updated_question, updated_answer):
+    sql = "UPDATE Cards SET question = ?, answer = ? WHERE id = ? RETURNING deck_id"
+    deck_id = db.execute(sql, [updated_question, updated_answer, card_id])
+    return deck_id[0][0]

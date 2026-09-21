@@ -97,9 +97,21 @@ def add_card():
 @app.route("/edit_deck/<int:deck_id>")
 def edit_cards(deck_id):
     cards = decks.get_cards(deck_id)
-    return render_template("edit_deck.html", cards=cards, deck_id=deck_id)
+    return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
     deck_id = decks.delete_card(card_id)
+    return redirect("/edit_deck/" + str(deck_id))
+
+@app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
+def edit_card(deck_id, card_id):
+    cards = decks.get_cards(deck_id)
+    return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=card_id)
+
+@app.route("/edit_card/update/<int:card_id>", methods=["POST"])
+def update_card(card_id):
+    updated_question = request.form["question"]
+    updated_answer = request.form["answer"]
+    deck_id = decks.update_card(card_id, updated_question, updated_answer)
     return redirect("/edit_deck/" + str(deck_id))

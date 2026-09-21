@@ -8,9 +8,22 @@
     <a href="/deck/{{ deck_id }}" type="button">Go back</a>
     {% for card in cards %}
     <hr />
+    {% if card.id != card_id %}
     <p>Question: {{ card.question }}, Answer: {{ card.answer }}</p>
     <form action="/edit_card/delete/{{ card.id }}" method="post">
         <input type="submit" value="delete" />
     </form>
+    <form action="/edit_card/edit/{{ card.deck_id }}/{{ card.id }}" method="post">
+        <input type="submit" value="edit" />
+    </form>
+    {% elif card.id == card_id %}
+    <form action="/edit_card/update/{{ card.id }}" method="post">
+        <input type="text" value="{{card.question}}" name="question"/>
+        <input type="text" value="{{card.answer}}" name="answer"/>
+        <input type="submit" value="Submit"/>
+    </form>
+
+    </form>
+    {% endif %}
     {% endfor %}
 </body>
