@@ -39,3 +39,15 @@ def update_card(card_id, updated_question, updated_answer):
     sql = "UPDATE Cards SET question = ?, answer = ? WHERE id = ? RETURNING deck_id"
     deck_id = db.execute(sql, [updated_question, updated_answer, card_id])
     return deck_id[0][0]
+
+def search(query):
+    sql = """SELECT d.id AS deck_id,
+                    d.name,
+                    d.created_at,
+                    u.username
+             FROM Decks d
+             JOIN Users u ON u.id = d.user_id
+             WHERE d.name LIKE ?
+             ORDER BY d.created_at DESC"""
+
+    return db.query(sql, ["%" + query + "%"])

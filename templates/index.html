@@ -28,6 +28,17 @@
     </form>
 
     {% endif %}
+    <h1><b>Search</b></h1>
+    <form action="/search" method="get">
+    <p>
+      {% if query %}
+      <input type="text" name="query" value="{{ query }}" />
+      {% else %}
+      <input type="text" name="query" />
+      {% endif %}
+    </p>
+    <input type="submit" value="Hae" />
+    </form>
 
     <h2><b>Decks</b></h2>
     {% for deck in deck_list %}

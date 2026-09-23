@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<head>
+    <title>test</title>
+</head>
+
+<body>
+    <h2><b>Results for keyword: "{{ query }}"</b></h2>
+    {% for r in results %}
+    <hr />
+    <a href="/deck/{{r.deck_id}}">{{ r.name }}</a>
+    <p></p>
+    created at: {{ r.created_at }}, by {{   r.username }}
+    {% endfor %}
+    <p></p>
+    <a href="/"> Go back</a>
+</body>

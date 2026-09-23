@@ -115,3 +115,9 @@ def update_card(card_id):
     updated_answer = request.form["answer"]
     deck_id = decks.update_card(card_id, updated_question, updated_answer)
     return redirect("/edit_deck/" + str(deck_id))
+
+@app.route("/search")
+def search():
+    query = request.args.get("query")
+    results = decks.search(query)
+    return render_template("search.html", results=results, query=query)
