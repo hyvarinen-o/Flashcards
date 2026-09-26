@@ -9,6 +9,10 @@ import config
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     deck_list = decks.get_decks()
@@ -64,19 +68,15 @@ def logout():
 
 @app.route("/new_deck")
 def new_deck():
-    try:
-        if session["user_id"]:
-            return render_template("new_deck.html")
-    except KeyError:
-        abort(403)
+    require_login()
+    return render_template("new_deck.html")
 
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
     name = request.form["name"]
     description = request.form["description"]
-    if name != "" and description != "":
-        thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
-        return redirect("/deck/" + str(thread_id))
+    thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
+    return redirect("/deck/" + str(thread_id))
 
 @app.route("/deck/<int:deck_id>")
 def show_deck(deck_id):

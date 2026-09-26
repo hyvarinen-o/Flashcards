@@ -7,11 +7,11 @@
     <h1>This page is for registration</h1>
     <form action="/create", method="post">
         <p>Enter a username</p>
-        <input type="text" name="username" />
+        <input type="text" name="username" required maxlenght="100"/>
         <p>Enter a password</p>
-        <input type="text" name="password1" />
+        <input type="text" name="password1" required maxlenght="200"/>
         <p>Enter password again</p>
-        <input type="text" name="password2" />
+        <input type="text" name="password2" required maxlength="200"/>
         <input type="submit" value="create" />
     </form>
 </body>

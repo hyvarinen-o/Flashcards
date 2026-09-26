@@ -23,8 +23,8 @@
 
     <form action="/add_card" method="post">
         <p>New card:</p>
-        Question:<input type="text" name="question" />
-        Answer:<input type="text" name="answer" />
+        Question:<input type="text" name="question" required />
+        Answer:<input type="text" name="answer" required />
         <input type="hidden" value="{{ deck.id }}" name="deck_id" />
         <input type="submit" value="Submit"/>
     </form>

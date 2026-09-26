@@ -18,8 +18,8 @@
     </form>
     {% elif card.id == card_id %}
     <form action="/edit_card/update/{{ card.id }}" method="post">
-        <input type="text" value="{{card.question}}" name="question"/>
-        <input type="text" value="{{card.answer}}" name="answer"/>
+        <input type="text" value="{{card.question}}" name="question" required maxlength="100">
+        <input type="text" value="{{card.answer}}" name="answer" required maxlength="300"/>
         <input type="submit" value="Submit"/>
     </form>
 
