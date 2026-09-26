@@ -1,6 +1,6 @@
 import sqlite3, datetime
 from flask import Flask
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import db, decks
 from flask import session
@@ -64,7 +64,11 @@ def logout():
 
 @app.route("/new_deck")
 def new_deck():
-    return render_template("new_deck.html")
+    try:
+        if session["user_id"]:
+            return render_template("new_deck.html")
+    except KeyError:
+        abort(403)
 
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
@@ -83,7 +87,13 @@ def show_deck(deck_id):
 def add_card_form(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
-    return render_template("deck.html", deck=deck, cards=cards, new_card=True)
+    try:
+        if deck[3] == session["user_id"]:
+            return render_template("deck.html", deck=deck, cards=cards, new_card=True)
+        else:
+            abort(403)
+    except KeyError:
+        abort(403)
 
 @app.route("/add_card", methods=["POST"])
 def add_card():
@@ -97,15 +107,22 @@ def add_card():
 @app.route("/edit_deck/<int:deck_id>")
 def edit_cards(deck_id):
     cards = decks.get_cards(deck_id)
-    return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
+    try:
+        if decks.get_deck(deck_id)[3] == session["user_id"]:
+            return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
+        else:
+            abort(403)
+    except KeyError:
+        abort(403)
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
+    #Only accessible by post method so users cant type the route in the address bar and delete cards
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
 @app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
-def edit_card(deck_id, card_id):
+def edit_card(deck_id, card_id):    
     cards = decks.get_cards(deck_id)
     return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=card_id)
 

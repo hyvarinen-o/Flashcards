@@ -6,9 +6,9 @@
 <body>
     <form action="/create_deck" method="post">
         <p>New deck name:</p>
-        <input type="text" name="name"/>
+        <input type="text" name="name" required/>
         <p>Enter description: <br/>
-        <textarea name="description" rows="5" cols="40"></textarea>
+        <textarea type="text" name="description" rows="5" cols="40" required></textarea>
         </p>
         <input type="submit" value="create">
     </form>
