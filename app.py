@@ -74,19 +74,24 @@ def new_deck():
 def create_deck():
     name = request.form["name"]
     description = request.form["description"]
-    thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
-    return redirect("/deck/" + str(thread_id))
+    if name != "" and description != "":
+        thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
+        return redirect("/deck/" + str(thread_id))
 
 @app.route("/deck/<int:deck_id>")
 def show_deck(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
+    if not deck:
+        abort(404)
     return render_template("deck.html", deck=deck, cards=cards, new_card=False)
 
 @app.route("/new_card_form/<int:deck_id>")
 def add_card_form(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
+    if not deck:
+        abort(404)
     try:
         if deck[3] == session["user_id"]:
             return render_template("deck.html", deck=deck, cards=cards, new_card=True)
@@ -107,8 +112,11 @@ def add_card():
 @app.route("/edit_deck/<int:deck_id>")
 def edit_cards(deck_id):
     cards = decks.get_cards(deck_id)
+    deck = decks.get_deck(deck_id)
+    if not deck:
+        abort(404)
     try:
-        if decks.get_deck(deck_id)[3] == session["user_id"]:
+        if deck[3] == session["user_id"]:
             return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
         else:
             abort(403)
@@ -138,3 +146,4 @@ def search():
     query = request.args.get("query")
     results = decks.search(query)
     return render_template("search.html", results=results, query=query)
+

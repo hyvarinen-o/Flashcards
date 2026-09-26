@@ -5,19 +5,20 @@ def get_decks():
             FROM Decks d LEFT JOIN Cards c ON c.deck_id = d.id
             GROUP BY d.id
             ORDER BY d.id DESC"""
-    return db.query(sql)
+    result = db.query(sql)
+    return result
 
 def get_deck(deck_id):
     sql = """SELECT d.id, d.name, d.description, d.user_id, d.created_at, u.username
             FROM Decks d JOIN Users u
             WHERE d.id = ? AND d.user_id = u.id"""
-    return db.query(sql, params=[deck_id])[0]
-
+    result = db.query(sql, params=[deck_id])
+    return result[0] if result else None
 
 def get_cards(deck_id):
     sql = "SELECT * FROM Cards WHERE deck_id = ?"
-    return db.query(sql, params=[deck_id])
-
+    result = db.query(sql, params=[deck_id])
+    return result
 
 def create_deck(name, description, user_id, created_at):
     sql = "INSERT INTO Decks (name, description, user_id, created_at) VALUES (?, ?, ?, ?)"
