@@ -18,8 +18,6 @@ def index():
     deck_list = decks.get_decks()
     return render_template("index.html", deck_list=deck_list)
 
-
-
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "GET":
@@ -55,8 +53,9 @@ def login():
     password = request.form["password"]
 
     user_id = users.check_login(username, password)
-    if not user_id:
-        abort(403)
+    if user_id == None:
+        flash("ERROR: Incorrect username or password")
+        return redirect("/login_page")
     session["username"] = username
     session["user_id"] = user_id
     return redirect("/")

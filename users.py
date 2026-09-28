@@ -15,12 +15,15 @@ def create_user(username, password_hash, date):
 
 def check_login(username, password):
     sql = "SELECT id, password_hash FROM Users WHERE username = ?"
-    result = db.query(sql, [username])[0]
-    user_id = result[0]
-    password_hash = result[1]
-    if check_password_hash(password_hash, password):
-        return user_id
-    return None
+    result = db.query(sql, [username])
+    if result != []:
+        result = result[0]
+        user_id = result[0]
+        password_hash = result[1]
+        if check_password_hash(password_hash, password):
+            return user_id
+        return None
+        
 
 def get_user(username):
     sql = """SELECT *

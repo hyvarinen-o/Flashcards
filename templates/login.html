@@ -4,7 +4,10 @@
 </head>
 
 <body>
-    <h1>Log in:</h1>
+    <h2><b>Log in:</b></h2>
+    {% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+    {% endfor %}
     <form action="/login" method="post">
         <p>Enter username:</p>
         <input type="text" name="username" required/>
