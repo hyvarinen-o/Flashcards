@@ -1,8 +1,8 @@
 import datetime
 from flask import Flask
 from flask import redirect, render_template, request, abort, session
-from werkzeug.security import generate_password_hash, check_password_hash
-import db, decks, users
+from werkzeug.security import generate_password_hash
+import decks, users
 import config
 
 app = Flask(__name__)
@@ -47,15 +47,12 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    sql = "SELECT id, password_hash FROM Users WHERE username = ?"
-    session_query = db.query(sql, [username])[0]
-    password_hash = session_query[1]
-    user_id = session_query[0]
-    if check_password_hash(password_hash, password):
-        session["username"] = username
-        session["user_id"] = user_id
-        return redirect("/")
-    return "Wrong username or password"
+    user_id = users.check_login(username, password)
+    if not user_id:
+        abort(403)
+    session["username"] = username
+    session["user_id"] = user_id
+    return redirect("/")
 
 @app.route("/logout", methods=["POST"])
 def logout():
@@ -94,7 +91,7 @@ def add_card_form(deck_id):
         abort(404)
 
     if deck[3] == session["user_id"]:
-        return render_template("deck.html", deck=deck, cards=cards, new_card=True) 
+        return render_template("deck.html", deck=deck, cards=cards, new_card=True)
     abort(403)
 
 @app.route("/add_card", methods=["POST"])
@@ -126,7 +123,7 @@ def delete_card(card_id):
     return redirect("/edit_deck/" + str(deck_id))
 
 @app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
-def edit_card(deck_id, card_id):    
+def edit_card(deck_id, card_id):
     require_login()
     cards = decks.get_cards(deck_id)
     return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=card_id)

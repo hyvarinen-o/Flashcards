@@ -2,10 +2,20 @@ import db
 
 
 def get_decks():
-    sql = """SELECT d.id, d.name, d.description, COUNT(c.id) AS total, d.created_at
-            FROM Decks d LEFT JOIN Cards c ON c.deck_id = d.id
-            GROUP BY d.id
-            ORDER BY d.id DESC"""
+    sql = """
+    SELECT 
+        d.id,
+        d.name,
+        d.description,
+        u.username,
+        COUNT(c.id) AS total,
+        d.created_at
+    FROM Decks d
+    LEFT JOIN Cards c ON c.deck_id = d.id
+    LEFT JOIN Users u ON u.id = d.user_id
+    GROUP BY d.id, d.name, d.description, u.username, d.created_at
+    ORDER BY d.id DESC
+    """
     result = db.query(sql)
     return result
 
