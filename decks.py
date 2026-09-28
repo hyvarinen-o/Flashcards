@@ -9,7 +9,8 @@ def get_decks():
         d.description,
         u.username,
         COUNT(c.id) AS total,
-        d.created_at
+        d.created_at,
+        d.user_id
     FROM Decks d
     LEFT JOIN Cards c ON c.deck_id = d.id
     LEFT JOIN Users u ON u.id = d.user_id
@@ -25,6 +26,23 @@ def get_deck(deck_id):
             WHERE d.id = ? AND d.user_id = u.id"""
     result = db.query(sql, params=[deck_id])
     return result[0] if result else None
+
+def get_users_decks(user_id):
+    sql = """
+    SELECT 
+        d.id,
+        d.name,
+        d.description,
+        COUNT(c.id) AS total,
+        d.created_at
+    FROM Decks d
+    LEFT JOIN Cards c ON c.deck_id = d.id
+    WHERE d.user_id = ?
+    GROUP BY d.id, d.name, d.description, d.created_at
+    ORDER BY d.id DESC
+    """
+    result = db.query(sql, params=[user_id])
+    return result
 
 def get_cards(deck_id):
     sql = "SELECT * FROM Cards WHERE deck_id = ?"

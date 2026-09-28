@@ -30,7 +30,8 @@ def create():
         return "Error, passwords don't match"
 
     password_hash = generate_password_hash(password1)
-    result = users.create_user(username, password_hash)
+    date = datetime.datetime.now().date()
+    result = users.create_user(username, password_hash, date)
     if not result:
         return "Username taken"
 
@@ -150,3 +151,9 @@ def search():
     query = request.args.get("query")
     results = decks.search(query)
     return render_template("search.html", results=results, query=query)
+
+@app.route("/user/<int:user_id>/<username>")
+def user_page(user_id, username):
+    user = users.get_user(username)
+    deck = decks.get_users_decks(user_id)
+    return render_template("user.html", user=user, decks=deck)

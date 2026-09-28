@@ -7,7 +7,7 @@
 <body>
     {% if session.username %}
     <h1>Flashdecks</h1>
-    <h2>Welcome {{session.username}}</h2>
+    <h2>Welcome <a href="/user/{{session.user_id}}/{{session.username}}">{{session.username}}</a></h2>
     <form action="/logout" method="post">
         <button>logout</button>
     </form>
@@ -39,7 +39,7 @@
     <hr />
     <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
     <p><b>Description:</b> {{ deck.description }}</p>
-    <p>by {{ deck.username }} at {{ deck.created_at }}</p>
+    <p>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{ deck.username }}</a> at {{ deck.created_at }}</p>
     {% endfor %}
     </p>
 </body>

@@ -5,7 +5,7 @@
 
 <body>
     <h1>{{deck.name}}</h1>
-    <h2>by {{deck.username}}</h2>
+    <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
     <p>created at {{deck.created_at}}</p>
     <p>Cards:</p>
 
@@ -20,7 +20,7 @@
     <p></p>
     <a href="/edit_deck/{{ deck.id }}">Edit cards</a>
     <p></p>
-    <a href="/delete_deck/{{ deck.id }}">Delete deck</a>
+    <a href="/delete_deck/{{ deck.id }}">Delete</a>
     {% elif session["user_id"] == deck.user_id and new_card == True%}
 
     <form action="/add_card" method="post">
