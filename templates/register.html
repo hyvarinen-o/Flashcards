@@ -4,14 +4,18 @@
 </head>
 
 <body>
-    <h1>This page is for registration</h1>
-    <form action="/create", method="post">
-        <p>Enter a username</p>
-        <input type="text" name="username" required maxlenght="100"/>
-        <p>Enter a password</p>
+    <h2><b>Register</b></h2>
+    {% for message in get_flashed_messages() %}
+    <p><b>{{ message }}</b></p>
+    {% endfor %}
+    <form action="/register", method="post">
+        <p>Enter username (max 30 characters)</p>
+        <input type="text" name="username" required maxlenght="30" value="{{ filled.username }}"/>
+        <p>Enter password</p>
         <input type="text" name="password1" required maxlenght="200"/>
         <p>Enter password again</p>
         <input type="text" name="password2" required maxlength="200"/>
+        <br>
         <input type="submit" value="create" />
     </form>
 </body>

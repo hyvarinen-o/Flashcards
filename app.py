@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask
-from flask import redirect, render_template, request, abort, session
+from flask import redirect, render_template, request, abort
+from flask import session, flash
 from werkzeug.security import generate_password_hash
 import decks, users
 import config
@@ -17,27 +18,32 @@ def index():
     deck_list = decks.get_decks()
     return render_template("index.html", deck_list=deck_list)
 
-@app.route("/register")
+
+
+@app.route("/register", methods=["POST", "GET"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html", filled={})
 
-@app.route("/create", methods=["POST"])
-def create():
-    username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
-    if password1 != password2:
-        return "Error, passwords don't match"
+    if request.method == "POST":
+        username = request.form["username"]
+        password1 = request.form["password1"]
+        password2 = request.form["password2"]
+        if password1 != password2:
+            flash("ERROR: passwords must match")
+            filled = {"username": username}
+            return render_template("register.html", filled=filled)
 
-    password_hash = generate_password_hash(password1)
-    date = datetime.datetime.now().date()
-    result = users.create_user(username, password_hash, date)
-    if not result:
-        return "Username taken"
+        password_hash = generate_password_hash(password1)
+        date = datetime.datetime.now().date()
+        result = users.create_user(username, password_hash, date)
+        if not result:
+            flash("ERROR: Username taken")
+            return render_template("register.html", filled={})
 
-    session["username"] = username
-    session["user_id"] = result
-    return redirect("/")
+        session["username"] = username
+        session["user_id"] = result
+        return redirect("/")
 
 @app.route("/login_page")
 def login_page():
