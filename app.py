@@ -74,6 +74,7 @@ def new_deck():
 
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
+    require_login()
     name = request.form["name"]
     description = request.form["description"]
     date = datetime.datetime.now().date()
@@ -103,6 +104,7 @@ def add_card_form(deck_id):
 
 @app.route("/add_card", methods=["POST"])
 def add_card():
+    require_login()
     question = request.form["question"]
     answer = request.form["answer"]
     deck_id = request.form["deck_id"]
@@ -125,16 +127,19 @@ def edit_cards(deck_id):
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
+    require_login()
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
 @app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
 def edit_card(deck_id, card_id):    
+    require_login()
     cards = decks.get_cards(deck_id)
     return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=card_id)
 
 @app.route("/edit_card/update/<int:card_id>", methods=["POST"])
 def update_card(card_id):
+    require_login()
     updated_question = request.form["question"]
     updated_answer = request.form["answer"]
     deck_id = decks.update_card(card_id, updated_question, updated_answer)
