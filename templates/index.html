@@ -6,7 +6,8 @@
 
 <body>
     {% if session.username %}
-    <h1>Welcome {{session.username}}</h1>
+    <h1>Flashdecks</h1>
+    <h2>Welcome {{session.username}}</h2>
     <form action="/logout" method="post">
         <button>logout</button>
     </form>
@@ -16,15 +17,9 @@
 
     {% else %}
     <h1><b>Flashcards</b></h1> 
-    <p><b>Sign in</b></p>
-    <form action="/register">
-        <button>Here</button>
-    </form>
-    <p>or</p>
-    <p><b>Log in</b></p>
-    <form action="/login_page">
-        <button>Here</button>
-    </form>
+    <a href="/register">Register</a>
+    or
+    <a href="/login_page">Login</a>
 
     {% endif %}
     <h1><b>Search</b></h1>
