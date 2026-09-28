@@ -1,5 +1,6 @@
 import db
 
+
 def get_decks():
     sql = """SELECT d.id, d.name, d.description, COUNT(c.id) AS total, d.created_at
             FROM Decks d LEFT JOIN Cards c ON c.deck_id = d.id
@@ -40,6 +41,13 @@ def update_card(card_id, updated_question, updated_answer):
     sql = "UPDATE Cards SET question = ?, answer = ? WHERE id = ? RETURNING deck_id"
     deck_id = db.execute(sql, [updated_question, updated_answer, card_id])
     return deck_id[0][0]
+
+def delete_deck(deck_id):
+    sql1 = "DELETE FROM Decks WHERE id = ?"
+    sql2 = "DELETE FROM Cards WHERE deck_id = ?"
+    db.execute(sql1, params=[deck_id])
+    db.execute(sql2, params=[deck_id])
+    return True
 
 def search(query):
     sql = """SELECT d.id AS deck_id,

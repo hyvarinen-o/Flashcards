@@ -2,7 +2,7 @@ import sqlite3, datetime
 from flask import Flask
 from flask import redirect, render_template, request, abort
 from werkzeug.security import generate_password_hash, check_password_hash
-import db, decks
+import db, decks, users
 from flask import session
 import config
 
@@ -32,11 +32,12 @@ def create():
         return "Error, passwords don't match"
 
     password_hash = generate_password_hash(password1)
-    try:
-        sql = "INSERT INTO Users (username, created_at, password_hash) VALUES (?, datetime('now'), ?)"
-        db.execute(sql, [username, password_hash])
-    except sqlite3.IntegrityError:
-        return "username already taken"
+    result = users.create_user(username, password_hash)
+    if not result:
+        return "Username taken"
+
+    session["username"] = username
+    session["user_id"] = result
     return redirect("/")
 
 @app.route("/login_page")
@@ -75,7 +76,8 @@ def new_deck():
 def create_deck():
     name = request.form["name"]
     description = request.form["description"]
-    thread_id = decks.create_deck(name, description, session["user_id"], datetime.datetime.now().date())
+    date = datetime.datetime.now().date()
+    thread_id = decks.create_deck(name, description, session["user_id"], date)
     return redirect("/deck/" + str(thread_id))
 
 @app.route("/deck/<int:deck_id>")
@@ -88,16 +90,15 @@ def show_deck(deck_id):
 
 @app.route("/new_card_form/<int:deck_id>")
 def add_card_form(deck_id):
+    require_login()
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
     if not deck:
         abort(404)
-    try:
-        if deck[3] == session["user_id"]:
-            return render_template("deck.html", deck=deck, cards=cards, new_card=True)
-        else:
-            abort(403)
-    except KeyError:
+
+    if deck[3] == session["user_id"]:
+        return render_template("deck.html", deck=deck, cards=cards, new_card=True)
+    else:
         abort(403)
 
 @app.route("/add_card", methods=["POST"])
@@ -111,21 +112,19 @@ def add_card():
 
 @app.route("/edit_deck/<int:deck_id>")
 def edit_cards(deck_id):
+    require_login()
     cards = decks.get_cards(deck_id)
     deck = decks.get_deck(deck_id)
     if not deck:
         abort(404)
-    try:
-        if deck[3] == session["user_id"]:
-            return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
-        else:
-            abort(403)
-    except KeyError:
+
+    if deck[3] == session["user_id"]:
+        return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
+    else:
         abort(403)
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
-    #Only accessible by post method so users cant type the route in the address bar and delete cards
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
@@ -140,6 +139,16 @@ def update_card(card_id):
     updated_answer = request.form["answer"]
     deck_id = decks.update_card(card_id, updated_question, updated_answer)
     return redirect("/edit_deck/" + str(deck_id))
+
+@app.route("/delete_deck/<int:deck_id>")
+def delete_deck(deck_id):
+    require_login()
+    if decks.get_deck(deck_id)[3] != session["user_id"]:
+        abort(403)
+    else:
+        decks.delete_deck(deck_id)
+    return redirect("/")
+
 
 @app.route("/search")
 def search():

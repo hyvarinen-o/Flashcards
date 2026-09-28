@@ -7,7 +7,6 @@
 <body>
     {% if session.username %}
     <h1>Welcome {{session.username}}</h1>
-    <p>Sign out</p>
     <form action="/logout" method="post">
         <button>logout</button>
     </form>
@@ -44,7 +43,7 @@
     {% for deck in deck_list %}
     <hr />
     <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
-    <p>{{ deck.description }}</p>
+    <p><b>Description:</b> {{ deck.description }}</p>
     <p>by {{ deck.username }} at {{ deck.created_at }}</p>
     {% endfor %}
     </p>
