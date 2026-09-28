@@ -20,7 +20,7 @@
     <p></p>
     <a href="/edit_deck/{{ deck.id }}">Edit cards</a>
     <p></p>
-    <a href="/delete_deck/{{ deck.id }}">Delete</a>
+    <a href="/delete_deck/{{ deck.id }}/verification">Delete</a>
     {% elif session["user_id"] == deck.user_id and new_card == True%}
 
     <form action="/add_card" method="post">

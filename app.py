@@ -142,7 +142,14 @@ def update_card(card_id):
     deck_id = decks.update_card(card_id, updated_question, updated_answer)
     return redirect("/edit_deck/" + str(deck_id))
 
-@app.route("/delete_deck/<int:deck_id>")
+@app.route("/delete_deck/<int:deck_id>/verification")
+def verify_deletion(deck_id):
+    require_login()
+    if decks.get_deck(deck_id)[3] != session["user_id"]:
+            abort(403)
+    return render_template("delete.html", deck_id = deck_id)
+
+@app.route("/delete_deck/<int:deck_id>", methods=["POST"])
 def delete_deck(deck_id):
     require_login()
     if decks.get_deck(deck_id)[3] != session["user_id"]:

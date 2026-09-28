@@ -4,7 +4,10 @@
 </head>
 
 <body>
-    <h2><b>Results for keyword: "{{ query }}"</b></h2>
+    {% if results == [] %}
+    <h2><b>No results for keyword: "{{ query }}"</b></h2>
+    {% else %}
+    <h2><b>{{ results|length }} results for keyword: "{{ query }}"</b></h2>
     {% for r in results %}
     <hr />
     <a href="/deck/{{r.deck_id}}">{{ r.name }}</a>
@@ -12,5 +15,6 @@
     created at: {{ r.created_at }}, by {{   r.username }}
     {% endfor %}
     <p></p>
+    {% endif %}
     <a href="/"> Go back</a>
 </body>

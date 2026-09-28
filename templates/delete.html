@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<head>
+    <title>Verify deletion</title>
+</head>
+
+<body>
+    <h2><b>Are you sure you want to delete this deck?</b></h2>
+    <form action="/delete_deck/{{ deck_id }}" method="post">
+        <p>Confirm deletion: <input type="submit" value="Delete" /></p>
+        <p></p>
+    </form>
+    <a href="/deck/{{ deck_id }}">No, go back</a>
+</body>
