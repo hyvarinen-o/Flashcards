@@ -1,9 +1,8 @@
-import sqlite3, datetime
+import datetime
 from flask import Flask
-from flask import redirect, render_template, request, abort
+from flask import redirect, render_template, request, abort, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import db, decks, users
-from flask import session
 import config
 
 app = Flask(__name__)
@@ -17,7 +16,6 @@ def require_login():
 def index():
     deck_list = decks.get_decks()
     return render_template("index.html", deck_list=deck_list)
-
 
 @app.route("/register")
 def register():
@@ -57,15 +55,13 @@ def login():
         session["username"] = username
         session["user_id"] = user_id
         return redirect("/")
-    else:
-        return "Wrong username or password"
+    return "Wrong username or password"
 
 @app.route("/logout", methods=["POST"])
 def logout():
     del session["username"]
     del session["user_id"]
     return redirect("/")
-
 
 @app.route("/new_deck")
 def new_deck():
@@ -98,9 +94,8 @@ def add_card_form(deck_id):
         abort(404)
 
     if deck[3] == session["user_id"]:
-        return render_template("deck.html", deck=deck, cards=cards, new_card=True)
-    else:
-        abort(403)
+        return render_template("deck.html", deck=deck, cards=cards, new_card=True) 
+    abort(403)
 
 @app.route("/add_card", methods=["POST"])
 def add_card():
@@ -122,8 +117,7 @@ def edit_cards(deck_id):
 
     if deck[3] == session["user_id"]:
         return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
-    else:
-        abort(403)
+    abort(403)
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
@@ -154,10 +148,8 @@ def delete_deck(deck_id):
         decks.delete_deck(deck_id)
     return redirect("/")
 
-
 @app.route("/search")
 def search():
     query = request.args.get("query")
     results = decks.search(query)
     return render_template("search.html", results=results, query=query)
-

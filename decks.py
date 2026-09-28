@@ -22,23 +22,31 @@ def get_cards(deck_id):
     return result
 
 def create_deck(name, description, user_id, created_at):
-    sql = "INSERT INTO Decks (name, description, user_id, created_at) VALUES (?, ?, ?, ?)"
+    sql = """INSERT INTO
+            Decks (name, description, user_id, created_at)
+            VALUES (?, ?, ?, ?)"""
     db.execute(sql, params=[name, description, user_id, created_at])
     deck_id = db.last_insert_id()
     return deck_id
 
 def add_card(question, answer, deck_id):
-    sql = "INSERT INTO Cards (question, answer, deck_id) VALUES (?, ?, ?)"
+    sql = """INSERT INTO
+            Cards (question, answer, deck_id)
+            VALUES (?, ?, ?)"""
     db.execute(sql, params=[question, answer, deck_id])
     return True
 
 def delete_card(card_id):
-    sql = "DELETE FROM Cards WHERE id = ? RETURNING deck_id"
+    sql = """DELETE FROM
+            Cards WHERE id = ?
+            RETURNING deck_id"""
     deck_id = db.execute(sql, [card_id])
     return deck_id[0][0]
 
 def update_card(card_id, updated_question, updated_answer):
-    sql = "UPDATE Cards SET question = ?, answer = ? WHERE id = ? RETURNING deck_id"
+    sql = """UPDATE Cards 
+            SET question = ?, answer = ? WHERE id = ?
+            RETURNING deck_id"""
     deck_id = db.execute(sql, [updated_question, updated_answer, card_id])
     return deck_id[0][0]
 
