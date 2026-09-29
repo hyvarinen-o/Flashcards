@@ -38,6 +38,11 @@
     {% for deck in deck_list %}
     <hr />
     <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
+    {% for category in category_list %}
+    {% if category.deck_id == deck.id %}
+    <span style="white-space: nowrap;">{{ category.category }}</span>
+    {% endif %}
+    {% endfor %}
     <p><b>Description:</b> {{ deck.description }}</p>
     <p>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{ deck.username }}</a> at {{ deck.created_at }}</p>
     {% endfor %}

@@ -7,13 +7,16 @@
     <h1>{{deck.name}}</h1>
     <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
     <p>created at {{deck.created_at}}</p>
+    <a href="/categories/{{ deck.id }}">Add category</a>
     <p>Cards:</p>
 
     {% for card in cards %}
+    <hr />
     <p>
-        question: {{card.question}}, answer: {{card.answer}}
+        question: {{card.question}} <|> answer: {{card.answer}}
     </p>
     {% endfor %}
+    <hr />
 
     {% if session["user_id"] == deck.user_id  and new_card == False%}
     <a href="/new_card_form/{{ deck.id }}">Add new cards</a>

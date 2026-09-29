@@ -16,7 +16,10 @@ def require_login():
 @app.route("/")
 def index():
     deck_list = decks.get_decks()
-    return render_template("index.html", deck_list=deck_list)
+    category_list = decks.get_categories_for_decks()
+    for i in category_list:
+        print(i[:])
+    return render_template("index.html", deck_list=deck_list, category_list=category_list)
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -169,3 +172,16 @@ def user_page(user_id, username):
     user = users.get_user(username)
     deck = decks.get_users_decks(user_id)
     return render_template("user.html", user=user, decks=deck)
+
+@app.route("/categories/<int:deck_id>")
+def category_page(deck_id):
+    categories = decks.get_categories()
+    return render_template("categories.html", categories=categories, deck_id=deck_id)
+
+@app.route("/add_categories/<int:deck_id>", methods=["POST"])
+def add_categories(deck_id):
+    category_id_list = request.form.getlist("categories")
+    for category_id in category_id_list:
+        if decks.check_for_duplicate_category(category_id, deck_id):
+            decks.add_category(category_id, deck_id)
+    return redirect("/deck/" + str(deck_id))

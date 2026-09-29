@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+    <title>Categories</title>
+</head>
+
+<body>
+    <h2>Select categories for your deck</h2>
+    {% for category in categories %}
+    <form action="/add_categories/{{ deck_id }}" method="post">
+        <input type="checkbox" id="{{ category.category }}" name="categories" value="{{ category.id }}"/>
+        <label for="{{ category.category }}">{{ category.category }}</label><br>
+    {% endfor %}
+        <button type="submit">Submit selection</button>
+    </form>
+    <h3>Couldn't find what you we're looking for?</h3>
+    <form>
+        <button type="submit">Create a new category</button>
+    </form>
+</body>

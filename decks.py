@@ -96,3 +96,31 @@ def search(query):
              ORDER BY d.created_at DESC"""
 
     return db.query(sql, ["%" + query + "%"])
+
+def get_categories():
+    sql = "SELECT * FROM Categories"
+    result = db.query(sql)
+    return result
+
+def add_category(category_id, deck_id):
+    sql = """INSERT INTO
+            Decks_categories (deck_id, category_id)
+            VALUES (?, ?)"""
+    result = db.execute(sql, params=[deck_id, category_id])
+    return result
+
+def check_for_duplicate_category(category_id, deck_id):
+    sql = """SELECT * FROM Decks_categories
+            WHERE category_id = ? AND deck_id = ?"""
+    result = db.query(sql, params=[category_id, deck_id])
+    if result == []:
+        return True
+    return False
+
+def get_categories_for_decks():
+    sql = """SELECT d.deck_id, c.category
+        FROM Decks_categories d
+        JOIN Categories c
+        ON c.id = d.category_id"""
+    result = db.query(sql)
+    return result
