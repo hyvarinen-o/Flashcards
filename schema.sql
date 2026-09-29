@@ -27,17 +27,10 @@ CREATE TABLE Categories(
     category TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE Category_options(
-    id INTEGER PRIMARY KEY,
-    category_option TEXT UNIQUE NOT NULL,
-    category_id INTEGER NOT NULL REFERENCES Categories,
-    UNIQUE (category_id, category_option)
-);
-
-CREATE TABLE Decks_category_options(
+CREATE TABLE Decks_categories(
     deck_id INTEGER NOT NULL REFERENCES Decks,
-    option_id INTEGER NOT NULL REFERENCES Category_options,
-    PRIMARY KEY (deck_id, option_id)
+    category_id INTEGER NOT NULL REFERENCES Categories,
+    PRIMARY KEY deck_id
 );
 
 CREATE TABLE Comments(
