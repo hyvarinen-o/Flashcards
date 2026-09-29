@@ -30,7 +30,7 @@ CREATE TABLE Categories(
 CREATE TABLE Decks_categories(
     id INTEGER PRIMARY KEY,
     deck_id INTEGER NOT NULL REFERENCES Decks,
-    category_id INTEGER NOT NULL REFERENCES Categories,
+    category_id INTEGER NOT NULL REFERENCES Categories
 );
 
 CREATE TABLE Comments(
