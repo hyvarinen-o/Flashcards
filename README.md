@@ -11,6 +11,7 @@
 * Toissijaiseksi tietokohteeksi käyttäjät pystyvät lisäämään pakkoihin arvostelun.
 
 ##Ohjeet sovelluksen testaamiseen
+
 Asenna flask-kirjasto:
 $ pip install flask
 
