@@ -102,7 +102,21 @@ def get_categories():
     result = db.query(sql)
     return result
 
-def add_category(category_id, deck_id):
+def check_existing_category(category):
+    sql = "SELECT * From Categories WHERE category = ?"
+    result = db.query(sql, params=[category])
+    if result == []:
+        return True
+    return False
+
+def create_category(category):
+    sql = """INSERT INTO
+            Categories (category)
+            VALUES (?)"""
+    result = db.execute(sql, params=[category])
+    return result
+
+def add_category_to_deck(category_id, deck_id):
     sql = """INSERT INTO
             Decks_categories (deck_id, category_id)
             VALUES (?, ?)"""
@@ -119,6 +133,14 @@ def check_for_duplicate_category(category_id, deck_id):
 
 def get_categories_for_decks():
     sql = """SELECT d.deck_id, c.category
+        FROM Decks_categories d
+        JOIN Categories c
+        ON c.id = d.category_id"""
+    result = db.query(sql)
+    return result
+
+def get_categories_for_deck(deck_id):
+    sql = """ SELECT c.category
         FROM Decks_categories d
         JOIN Categories c
         ON c.id = d.category_id"""

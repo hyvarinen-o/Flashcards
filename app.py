@@ -17,8 +17,6 @@ def require_login():
 def index():
     deck_list = decks.get_decks()
     category_list = decks.get_categories_for_decks()
-    for i in category_list:
-        print(i[:])
     return render_template("index.html", deck_list=deck_list, category_list=category_list)
 
 @app.route("/register", methods=["POST", "GET"])
@@ -87,9 +85,10 @@ def create_deck():
 def show_deck(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
+    categories = decks.get_categories_for_deck(deck_id)
     if not deck:
         abort(404)
-    return render_template("deck.html", deck=deck, cards=cards, new_card=False)
+    return render_template("deck.html", deck=deck, cards=cards, categories=categories, new_card=False)
 
 @app.route("/new_card_form/<int:deck_id>")
 def add_card_form(deck_id):
@@ -176,12 +175,27 @@ def user_page(user_id, username):
 @app.route("/categories/<int:deck_id>")
 def category_page(deck_id):
     categories = decks.get_categories()
-    return render_template("categories.html", categories=categories, deck_id=deck_id)
+    return render_template("categories.html", categories=categories, deck_id=deck_id, new_category=False)
 
 @app.route("/add_categories/<int:deck_id>", methods=["POST"])
 def add_categories(deck_id):
     category_id_list = request.form.getlist("categories")
     for category_id in category_id_list:
         if decks.check_for_duplicate_category(category_id, deck_id):
-            decks.add_category(category_id, deck_id)
+            decks.add_category_to_deck(category_id, deck_id)
     return redirect("/deck/" + str(deck_id))
+
+@app.route("/create_category")
+def create_category_page():
+    return render_template("new_category.html")
+
+@app.route("/create_new_category", methods=["POST"])
+def create_new_category():
+    require_login()
+    category = request.form["category"]
+    if decks.check_existing_category(category):
+        decks.create_category(category)
+        flash("Category added successfully")
+        return redirect("/create_category")
+    flash("Category already exists!")
+    return redirect("/create_category")

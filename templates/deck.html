@@ -7,6 +7,11 @@
     <h1>{{deck.name}}</h1>
     <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
     <p>created at {{deck.created_at}}</p>
+    <a>Categories:</a>
+    {% for category in categories %}
+    <span style="white-space: nowrap;">{{ category.category }} /</span>
+    {% endfor %}
+    <br />
     <a href="/categories/{{ deck.id }}">Add category</a>
     <p>Cards:</p>
 
