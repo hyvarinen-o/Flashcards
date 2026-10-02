@@ -10,7 +10,7 @@ CREATE TABLE Decks(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
-    user_id INTEGER NOT NULL REFERENCES Users,
+    user_id INTEGER NOT NULL,
     created_at TEXT NOT NULL 
 );
 

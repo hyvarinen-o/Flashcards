@@ -43,6 +43,7 @@
         Question:<input type="text" name="question" required />
         Answer:<input type="text" name="answer" required />
         <input type="hidden" value="{{ deck.id }}" name="deck_id" />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit"/>
     </form>
 

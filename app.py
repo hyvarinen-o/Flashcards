@@ -112,6 +112,8 @@ def add_card_form(deck_id):
 @app.route("/add_card", methods=["POST"])
 def add_card():
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     question = request.form["question"]
     answer = request.form["answer"]
     deck_id = request.form["deck_id"]
@@ -134,6 +136,8 @@ def edit_cards(deck_id):
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
@@ -146,6 +150,8 @@ def edit_card(deck_id, card_id):
 @app.route("/edit_card/update/<int:card_id>", methods=["POST"])
 def update_card(card_id):
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     updated_question = request.form["question"]
     updated_answer = request.form["answer"]
     deck_id = decks.update_card(card_id, updated_question, updated_answer)
@@ -161,6 +167,8 @@ def verify_deletion(deck_id):
 @app.route("/delete_deck/<int:deck_id>", methods=["POST"])
 def delete_deck(deck_id):
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     if decks.get_deck(deck_id)[3] != session["user_id"]:
         abort(403)
     else:
