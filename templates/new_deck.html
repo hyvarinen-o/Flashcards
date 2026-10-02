@@ -10,6 +10,7 @@
         <p>Enter description: <br/>
         <textarea type="text" name="description" rows="5" cols="40" required maxlength="400"></textarea>
         </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="create">
     </form>
 </body>

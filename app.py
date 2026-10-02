@@ -43,6 +43,7 @@ def register():
 
         session["username"] = username
         session["user_id"] = result
+        session["csrf_token"] = config.generate_csrf_token()
         return redirect("/")
 
 @app.route("/login_page")
@@ -60,12 +61,14 @@ def login():
         return redirect("/login_page")
     session["username"] = username
     session["user_id"] = user_id
+    session["csrf_token"] = config.generate_csrf_token()
     return redirect("/")
 
 @app.route("/logout", methods=["POST"])
 def logout():
     del session["username"]
     del session["user_id"]
+    del session["csrf_token"]
     return redirect("/")
 
 @app.route("/new_deck")
@@ -76,6 +79,8 @@ def new_deck():
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     name = request.form["name"]
     description = request.form["description"]
     date = datetime.datetime.now().date()
@@ -87,7 +92,7 @@ def show_deck(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
     categories = decks.get_categories_for_deck(deck_id)
-    ratings = decks.get_rating_for_deck(deck_id)
+    ratings = decks.get_rating_for_deck(deck_id)    
     if not deck:
         abort(404)
     return render_template("deck.html", deck=deck, cards=cards, categories=categories, ratings=ratings, new_card=False)

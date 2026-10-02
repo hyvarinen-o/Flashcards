@@ -156,8 +156,13 @@ def get_ratings_for_decks():
     
 
 def get_rating_for_deck(deck_id):
-    sql = "SELECT ROUND(AVG(rating), 1) as average, COUNT(rating) as count FROM Rating WHERE deck_id = ?"
+    sql = """SELECT ROUND(AVG(rating), 1) as average, COUNT(rating) as count 
+            FROM Rating 
+            WHERE deck_id = ?
+            GROUP BY deck_id"""
     result = db.query(sql, params=[deck_id])
+    if len(result) == 0:
+        return result
     return result[0]
 
 def add_rating_to_deck(user_id, rating, deck_id):
