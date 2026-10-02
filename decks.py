@@ -146,3 +146,37 @@ def get_categories_for_deck(deck_id):
         ON c.id = d.category_id"""
     result = db.query(sql)
     return result
+
+def get_ratings_for_decks():
+    sql = """SELECT deck_id, ROUND(AVG(rating), 1) as average
+            FROM Rating
+            GROUP BY deck_id"""
+    result = db.query(sql)
+    return result
+    
+
+def get_rating_for_deck(deck_id):
+    sql = "SELECT ROUND(AVG(rating), 1) as average, COUNT(rating) as count FROM Rating WHERE deck_id = ?"
+    result = db.query(sql, params=[deck_id])
+    return result[0]
+
+def add_rating_to_deck(user_id, rating, deck_id):
+    sql = """INSERT INTO
+        Rating (user_id, rating, deck_id)
+        VALUES (?, ? ,?)"""
+    result = db.execute(sql, params=[user_id, rating, deck_id])
+    return result
+
+def check_existing_rating(user_id, deck_id):
+    sql = "SELECT * FROM Rating WHERE user_id = ? AND deck_id = ?"
+    result = db.query(sql, params=[user_id, deck_id])
+    if result == []:
+        return True
+    return False
+
+def update_rating(user_id, rating, deck_id):
+    sql = """UPDATE Rating
+        SET rating = ?
+        WHERE user_id = ? AND deck_id = ?"""
+    result = db.execute(sql, params=[rating, user_id, deck_id])
+    return result

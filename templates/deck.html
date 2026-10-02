@@ -6,6 +6,13 @@
 <body>
     <h1>{{deck.name}}</h1>
     <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
+    <h3>Rating: 
+    {% if ratings|length > 0 %}
+    <label>{{ ratings.average }}/5 ({{ ratings.count }} ratings)</label>
+    {% elif ratings|length == 0 %}
+    <label>No ratings yet</label>
+    {% endif %}
+    </h3>
     <p>created at {{deck.created_at}}</p>
     <a>Categories:</a>
     {% for category in categories %}
@@ -40,6 +47,16 @@
     </form>
 
 
+    {% endif %}
+    {% if session["user_id"] %}
+    <form action="/add_rating/{{ deck.id }}" method="post">
+        <label for="rating">Rate this deck (1-5):</label><br/>
+        <input type="number" id="rating" name="rating" min="1" max="5" step="1" value="5">
+        <input type="submit" value="Submit rating">
+    </form>
+    {% for messsage in get_flashed_messages() %}
+    <p>{{ message }}</p>
+    {% endfor %}
     {% endif %}
     <p></p>
     <a href="/">Go back</a>

@@ -33,10 +33,9 @@ CREATE TABLE Decks_categories(
     category_id INTEGER NOT NULL REFERENCES Categories
 );
 
-CREATE TABLE Comments(
+CREATE TABLE Rating(
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES Users,
-    content TEXT NOT NULL,
-    deck_id INTEGER NOT NULL REFERENCES Decks,
-    created_at TEXT
+    rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 5),
+    deck_id INTEGER NOT NULL REFERENCES Decks
 );

@@ -38,9 +38,15 @@
     {% for deck in deck_list %}
     <hr />
     <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
+    <a><b>Categories: </b>  </a>
     {% for category in category_list %}
     {% if category.deck_id == deck.id %}
-    <span style="white-space: nowrap;">{{ category.category }}</span>
+    </a><span style="white-space: nowrap;">{{ category.category }} /</span>
+    {% endif %}
+    {% endfor %}
+    {% for rating in ratings_list %}
+    {% if rating.deck_id == deck.id %}
+    <p><b>Rating:</b> {{ rating.average }}/5</p>
     {% endif %}
     {% endfor %}
     <p><b>Description:</b> {{ deck.description }}</p>

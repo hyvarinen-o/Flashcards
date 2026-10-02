@@ -17,7 +17,8 @@ def require_login():
 def index():
     deck_list = decks.get_decks()
     category_list = decks.get_categories_for_decks()
-    return render_template("index.html", deck_list=deck_list, category_list=category_list)
+    ratings_list = decks.get_ratings_for_decks()
+    return render_template("index.html", deck_list=deck_list, ratings_list=ratings_list, category_list=category_list)
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -86,9 +87,10 @@ def show_deck(deck_id):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id)
     categories = decks.get_categories_for_deck(deck_id)
+    ratings = decks.get_rating_for_deck(deck_id)
     if not deck:
         abort(404)
-    return render_template("deck.html", deck=deck, cards=cards, categories=categories, new_card=False)
+    return render_template("deck.html", deck=deck, cards=cards, categories=categories, ratings=ratings, new_card=False)
 
 @app.route("/new_card_form/<int:deck_id>")
 def add_card_form(deck_id):
@@ -199,3 +201,16 @@ def create_new_category():
         return redirect("/create_category")
     flash("Category already exists!")
     return redirect("/create_category")
+
+@app.route("/add_rating/<int:deck_id>", methods=["POST"])
+def add_rating_to_deck(deck_id):
+    require_login()
+    rating = request.form["rating"]
+    if decks.check_existing_rating(session["user_id"], deck_id):
+        decks.add_rating_to_deck(session["user_id"], rating, deck_id)
+        flash("Rating submitted. Thank you for rating this deck!")
+        return redirect("/deck/" + str(deck_id))
+    decks.update_rating(session["user_id"], rating, deck_id)
+    flash("Your rating for this deck has been updated")
+    return redirect("/deck/" + str(deck_id))
+    
