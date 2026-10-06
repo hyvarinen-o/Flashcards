@@ -26,7 +26,7 @@ def check_login(username, password):
         
 
 def get_user(username):
-    sql = """SELECT *
+    sql = """SELECT id, username, created_at
     FROM Users
     WHERE username = ?"""
 

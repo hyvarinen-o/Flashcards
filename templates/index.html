@@ -23,6 +23,7 @@
 
     {% endif %}
     <h1><b>Search</b></h1>
+    <a>Keyword or category:</a>
     <form action="/search" method="get">
     <p>
       {% if query %}
@@ -31,7 +32,7 @@
       <input type="text" name="query" />
       {% endif %}
     </p>
-    <input type="submit" value="Hae" />
+    <input type="submit" value="Search" />
     </form>
 
     <h2><b>Decks</b></h2>

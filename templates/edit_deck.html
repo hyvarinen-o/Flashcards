@@ -33,7 +33,10 @@
         <input type="submit" value="edit" />
     </form>
     {% elif card.id == card_id %}
-    <form action="/edit_card/update/{{ card.id }}" method="post">
+        {% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    <form action="/edit_card/update/{{ deck.id }}/{{ card.id }}" method="post">
         <input type="text" value="{{card.question}}" name="question" required maxlength="100">
         <input type="text" value="{{card.answer}}" name="answer" required maxlength="300"/>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
