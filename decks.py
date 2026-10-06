@@ -57,6 +57,14 @@ def create_deck(name, description, user_id, created_at):
     deck_id = db.last_insert_id()
     return deck_id
 
+def update_deck(deck_name, description, deck_id):
+    sql = """UPDATE Decks
+            SET name = ?, description = ?
+            WHERE id = ?"""
+    result = db.execute(sql, params=[deck_name, description, deck_id])
+    return deck_id
+    
+
 def add_card(question, answer, deck_id):
     sql = """INSERT INTO
             Cards (question, answer, deck_id)

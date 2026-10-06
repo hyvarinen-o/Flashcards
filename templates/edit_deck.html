@@ -4,8 +4,23 @@
 </head>
 
 <body>
-    <h1><b>Edit cards:</b></h1>
-    <a href="/deck/{{ deck_id }}" type="button">Go back</a>
+    <h1><b>Edit deck</b></h1>
+    <a href="/deck/{{ deck.id }}" type="button">Go back</a>
+    <hr />
+    <p></p>
+    <form action="/edit_deck_name_and_description/{{ deck.id }}" method="post">
+        <a>Edit deck name:</a><br />
+        <input type="text" name="deck_name" value="{{ deck.name }}" required maxlenght="50"/>
+        <p></p>
+        <a>Edit description:</a><br />
+        <textarea type="textarea" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
+        <br />
+        <input type="submit" value="Submit changes" />
+    </form>
+    {% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+    {% endfor %}
+
     {% for card in cards %}
     <hr />
     {% if card.id != card_id %}

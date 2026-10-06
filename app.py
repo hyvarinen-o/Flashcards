@@ -160,8 +160,16 @@ def edit_cards(deck_id):
         abort(404)
 
     if deck[3] == session["user_id"]:
-        return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=-1)
+        return render_template("edit_deck.html", cards=cards, deck=deck, card_id=-1)
     abort(403)
+
+@app.route("/edit_deck_name_and_description/<int:deck_id>", methods=["POST"])
+def edit_deck_name(deck_id):
+    deck_name = request.form["deck_name"]
+    description = request.form["description"]
+    decks.update_deck(deck_name, description, deck_id)
+    flash("Changes applied")
+    return redirect("/edit_deck/" + str(deck_id))
 
 @app.route("/edit_card/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
