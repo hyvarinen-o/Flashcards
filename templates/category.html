@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+    <title>{{ deck_list[0][0] }}</title>
+</head>
+
+<body>
+    <h2>Decks in category: {{ deck_list[0][0] }}</h2>
+    <h3>{{ deck_list[:] | length }} decks found</h3>
+    {% for deck in deck_list %}
+    <hr />
+    <a href="/deck/{{ deck.id }}">{{ deck.name }}</a></p>
+    <p><b>Description:</b> {{ deck.description }}</p>
+    <p>by {{ deck.username }} at {{ deck.created_at }}</p>
+    {% endfor %}
+    <p></p>
+    <a href="/">Go back to Frontpage</a>
+
+</body>

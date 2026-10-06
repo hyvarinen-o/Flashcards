@@ -42,7 +42,7 @@
     <a><b>Categories: </b>  </a>
     {% for category in category_list %}
     {% if category.deck_id == deck.id %}
-    </a><span style="white-space: nowrap;">{{ category.category }} /</span>
+    <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
     {% endif %}
     {% endfor %}
     {% for rating in ratings_list %}

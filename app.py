@@ -263,9 +263,9 @@ def user_page(user_id, username):
     return render_template("user.html", user=user, decks=deck)
 
 @app.route("/categories/<int:deck_id>")
-def category_page(deck_id):
+def category_select_page(deck_id):
     categories = decks.get_categories()
-    return render_template("categories.html", categories=categories, deck_id=deck_id, new_category=False)
+    return render_template("category_select.html", categories=categories, deck_id=deck_id, new_category=False)
 
 @app.route("/add_categories/<int:deck_id>", methods=["POST"])
 def add_categories(deck_id):
@@ -304,4 +304,8 @@ def add_rating_to_deck(deck_id):
     decks.update_rating(session["user_id"], rating, deck_id)
     flash("Your rating for this deck has been updated")
     return redirect("/deck/" + str(deck_id))
-    
+
+@app.route("/category/<category>")
+def category_page(category):
+    deck_list = decks.get_decks_for_category(category)
+    return render_template("category.html", category=category, deck_list=deck_list)

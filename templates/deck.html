@@ -16,7 +16,7 @@
     <p>created at {{deck.created_at}}</p>
     <a>Categories:</a>
     {% for category in categories %}
-    <span style="white-space: nowrap;">{{ category.category }} /</span>
+    <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
     {% endfor %}
     <br />
     <a href="/categories/{{ deck.id }}">Add category</a>

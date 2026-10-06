@@ -157,8 +157,19 @@ def get_categories_for_deck(deck_id):
     sql = """ SELECT c.category
         FROM Decks_categories d
         JOIN Categories c
-        ON c.id = d.category_id AND d.id = ?"""
+        ON c.id = d.category_id AND d.deck_id = ?"""
     result = db.query(sql, params=[deck_id])
+    return result
+
+def get_decks_for_category(category):
+    sql = """SELECT c.category, d.name, d.description,
+            d.created_at, u.username, d.id
+            FROM Decks d JOIN Users u ON d.user_id = u.id
+            LEFT JOIN Decks_categories dc ON dc.deck_id = d.id 
+            JOIN Categories c ON dc.category_id = c.id
+            WHERE c.category = ?
+            GROUP BY d.id, d.name, d.description, d.created_at, u.username, c.category"""
+    result = db.query(sql, params=[category])
     return result
 
 def get_ratings_for_decks():
