@@ -8,7 +8,7 @@
 * Käyttäjä pystyy etsimään korttipakkoja hakusanalla.
 * Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät korttipakat.
 * Käyttäjä pystyy valitsemaan korttipakalle yhden tai useamman luokittelun (esim. kielet, termit, kuva/sana yhteydet).
-* Toissijaiseksi tietokohteeksi käyttäjät pystyvät lisäämään pakkoihin arvostelun kommentin muodossa.
+* Toissijaiseksi tietokohteeksi käyttäjät pystyvät lisäämään pakkoihin arvostelun.
 
 ##Ohjeet sovelluksen testaamiseen
 
@@ -21,4 +21,4 @@ $ sqlite3 database.db < schema.sql
 käynnistä sovellus:
 $ flask --app app run
 
-Luo käyttäjä tai useampi ja kokeile lisätä tietokohteita
+Luo käyttäjä tai useampi ja kokeile lisätä, muokata ja poistaa tietokohteita
