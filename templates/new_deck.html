@@ -5,12 +5,28 @@
 
 <body>
     <form action="/create_deck" method="post">
-        <p>New deck name:</p>
-        <input type="text" name="name" required maxlength="50"/>
+        <p>Deck name:</p>
+        <input type="text" name="name" value="{{ deck_name }}" required maxlength="50"/>
         <p>Enter description: <br/>
-        <textarea type="text" name="description" rows="5" cols="40" required maxlength="400"></textarea>
-        </p>
+        <textarea type="text" name="description" rows="5" cols="40" required maxlength="400">{{ description }}</textarea>
+        <p>Cards:</p>
+        {% for card in cards %}
+        <div>
+            <hr />
+            <a>Card {{ loop.index }}</a>
+            <br/>
+            <a>Question: </a>
+            <input type="text" name="questions[]" value="{{ card['question'] }}" required />
+            <br />
+            <a>Answer:</a>
+            <input type="text" name="answers[]" value="{{ card['answer'] }}" required />
+        </div>
+        {% endfor %}
+        <p></p>
+        <button type="submit" formaction="/add_card_field">New card</button>
+        <hr />
+        <p></p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="create">
+        <input type="submit" value="Create Deck">
     </form>
 </body>

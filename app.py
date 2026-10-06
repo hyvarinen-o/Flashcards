@@ -74,7 +74,25 @@ def logout():
 @app.route("/new_deck")
 def new_deck():
     require_login()
-    return render_template("new_deck.html")
+    cards = []
+    return render_template("new_deck.html", cards=cards)
+
+@app.route("/add_card_field", methods=["POST"])
+def add_card_field():
+    deck_name = request.form["name"]
+    description = request.form["description"]
+    questions = request.form.getlist("questions[]")
+    answers = request.form.getlist("answers[]")
+
+    cards = []
+    if questions and answers: 
+        for q, a in zip(questions, answers):
+            cards.append({"question": q, "answer": a})
+        cards.append({"question": "", "answer": ""})
+    else:
+        cards.append({"question": "", "answer": ""})
+
+    return render_template("new_deck.html", deck_name=deck_name, description=description, cards=cards)
 
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
@@ -83,9 +101,21 @@ def create_deck():
         abort(403)
     name = request.form["name"]
     description = request.form["description"]
+    questions = request.form.getlist("questions[]")
+    answers = request.form.getlist("answers[]")
+
     date = datetime.datetime.now().date()
-    thread_id = decks.create_deck(name, description, session["user_id"], date)
-    return redirect("/deck/" + str(thread_id))
+    deck_id = decks.create_deck(name, description, session["user_id"], date)
+
+    if questions and answers:
+        cards = [] 
+        for q, a in zip(questions, answers):
+            cards.append({"question": q, "answer": a})
+        for card in cards:
+            decks.add_card(card["question"], card["answer"], deck_id)
+
+
+    return redirect("/deck/" + str(deck_id))
 
 @app.route("/deck/<int:deck_id>")
 def show_deck(deck_id):
