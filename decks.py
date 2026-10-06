@@ -100,10 +100,13 @@ def search(query):
                     u.username
              FROM Decks d
              JOIN Users u ON u.id = d.user_id
-             WHERE d.name LIKE ?
+             WHERE (d.name LIKE ?
+             OR u.username LIKE ?
+             OR d.description LIKE ?)
              ORDER BY d.created_at DESC"""
-
-    return db.query(sql, ["%" + query + "%"])
+    
+    query_sql = "%" + query + "%"
+    return db.query(sql, [query_sql, query_sql, query_sql])
 
 def get_categories():
     sql = "SELECT * FROM Categories"
