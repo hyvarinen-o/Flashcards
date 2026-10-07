@@ -1,23 +1,25 @@
 import db
 
 
-def get_decks():
+def get_decks(page, page_size):
     sql = """
-    SELECT 
-        d.id,
-        d.name,
-        d.description,
-        u.username,
-        COUNT(c.id) AS total,
-        d.created_at,
-        d.user_id
-    FROM Decks d
-    LEFT JOIN Cards c ON c.deck_id = d.id
-    LEFT JOIN Users u ON u.id = d.user_id
-    GROUP BY d.id, d.name, d.description, u.username, d.created_at
-    ORDER BY d.id DESC
-    """
-    result = db.query(sql)
+            SELECT 
+                d.id,
+                d.name,
+                d.description,
+                u.username,
+                COUNT(c.id) AS total,
+                d.created_at,
+                d.user_id
+            FROM Decks d
+            LEFT JOIN Cards c ON c.deck_id = d.id
+            LEFT JOIN Users u ON u.id = d.user_id
+            GROUP BY d.id, d.name, d.description, u.username, d.created_at
+            ORDER BY d.id DESC
+            LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    result = db.query(sql, [limit, offset])
     return result
 
 def get_deck(deck_id):
@@ -27,7 +29,7 @@ def get_deck(deck_id):
     result = db.query(sql, params=[deck_id])
     return result[0] if result else None
 
-def get_users_decks(user_id):
+def get_users_decks(user_id, page, page_size):
     sql = """
     SELECT 
         d.id,
@@ -40,13 +42,22 @@ def get_users_decks(user_id):
     WHERE d.user_id = ?
     GROUP BY d.id, d.name, d.description, d.created_at
     ORDER BY d.id DESC
-    """
-    result = db.query(sql, params=[user_id])
+    LIMIT ? OFFSET ?"""
+
+    limit = page_size
+    offset = page_size * (page - 1)
+    result = db.query(sql, params=[user_id, limit, offset])
     return result
 
-def get_cards(deck_id):
-    sql = "SELECT id, question, answer, deck_id FROM Cards WHERE deck_id = ?"
-    result = db.query(sql, params=[deck_id])
+def get_cards(deck_id, page, page_size):
+    sql = """SELECT id, question, answer, deck_id
+            FROM Cards
+            WHERE deck_id = ?
+            LIMIT ? OFFSET ?"""
+
+    limit = page_size
+    offset = page_size * (page - 1)
+    result = db.query(sql, params=[deck_id, limit, offset])
     return result
 
 def create_deck(name, description, user_id, created_at):
@@ -210,3 +221,19 @@ def update_rating(user_id, rating, deck_id):
         WHERE user_id = ? AND deck_id = ?"""
     result = db.execute(sql, params=[rating, user_id, deck_id])
     return result
+
+
+def deck_count():
+    sql = "SELECT COUNT(id) FROM Decks"
+    result = db.query(sql)
+    return result[0][0]
+
+def card_count(deck_id):
+    sql = "SELECT COUNT(id) FROM Cards WHERE deck_id = ?"
+    result = db.query(sql, params=[deck_id])
+    return result[0][0]
+
+def deck_count_for_user(user_id):
+    sql = "SELECT COUNT(id) FROM Decks WHERE user_id = ?"
+    result = db.query(sql, params=[user_id])
+    return result[0][0]

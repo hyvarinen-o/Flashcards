@@ -30,7 +30,13 @@
         question: {{card.question}} <|> answer: {{card.answer}}
     </p>
     {% endfor %}
-    <hr />
+    <p>
+        <a href="/deck/{{ deck.id }}/{{ page - 1 }}">&lt;&lt;</a>
+        Page {{ page }}/{{ page_count }}
+        <a href="/deck/{{ deck.id }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+    <hr />    
+
 
     {% if session["user_id"] == deck.user_id  and new_card == False%}
     <a href="/new_card_form/{{ deck.id }}">Add new cards</a>

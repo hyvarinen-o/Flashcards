@@ -14,4 +14,10 @@
     <p><b>Description:</b> {{ deck.description }}</p>
     <p>by {{ user   .username }} at {{ deck.created_at }}</p>
     {% endfor %}
+    <p>
+        <a href="/user/{{ user.id }}/{{ user.username }}/{{ page - 1 }}">&lt;&lt;</a>
+        Sivu {{ page }}/{{ page_count }}
+        <a href="/user/{{ user.id }}/{{ user.username }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+    <hr /
 </body>

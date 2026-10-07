@@ -1,4 +1,4 @@
-import datetime
+import datetime, math
 from flask import Flask
 from flask import redirect, render_template, request, abort
 from flask import session, flash
@@ -14,11 +14,26 @@ def require_login():
         abort(403)
 
 @app.route("/")
-def index():
-    deck_list = decks.get_decks()
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 10
+    deck_count = decks.deck_count()
+    page_count = math.ceil(deck_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+    deck_list = decks.get_decks(page, page_size)
     category_list = decks.get_categories_for_decks()
     ratings_list = decks.get_ratings_for_decks()
-    return render_template("index.html", deck_list=deck_list, ratings_list=ratings_list, category_list=category_list)
+    return render_template("index.html",
+                        page=page,
+                        page_count=page_count,
+                        deck_list=deck_list,
+                        ratings_list=ratings_list, 
+                        category_list=category_list)
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -138,25 +153,56 @@ def create_deck():
         return redirect("/deck/" + str(deck_id))
 
 @app.route("/deck/<int:deck_id>")
-def show_deck(deck_id):
+@app.route("/deck/<int:deck_id>/<int:page>")
+def show_deck(deck_id, page=1):
+    page_size = 5
+    card_count = decks.card_count(deck_id)
+    page_count = math.ceil(card_count / page_size)
+    page_count = max(page_count, 1)
+    if page < 1:
+        return redirect("/deck/" + str(deck_id) + "/1")
+    if page > page_count:
+        return redirect("/deck/" + str(deck_id) + "/" + str(page_count))
+
     deck = decks.get_deck(deck_id)
-    cards = decks.get_cards(deck_id)
+    cards = decks.get_cards(deck_id, page, page_size)
     categories = decks.get_categories_for_deck(deck_id)
     ratings = decks.get_rating_for_deck(deck_id)    
     if not deck:
         abort(404)
-    return render_template("deck.html", deck=deck, cards=cards, categories=categories, ratings=ratings, new_card=False)
+    return render_template("deck.html",
+                           page=page,
+                           page_count=page_count,
+                           deck=deck,
+                           cards=cards,
+                           categories=categories,
+                           ratings=ratings,
+                           new_card=False)
 
 @app.route("/new_card_form/<int:deck_id>")
-def add_card_form(deck_id):
+@app.route("/new_card_form/<int:deck_id>/<int:page>")
+def add_card_form(deck_id, page=0):
     require_login()
+    page_size = 5
+    card_count = decks.card_count(deck_id)
+    page_count = math.ceil(card_count / page_size)
+    page_count = max(page_count, 1)
+    if page < 1:
+        return redirect("/new_card_form/" + str(deck_id) + "/1")
+    if page > page_count:
+        return redirect("/new_card_form/" + str(deck_id) + "/" + str(page_count))
+
     deck = decks.get_deck(deck_id)
-    cards = decks.get_cards(deck_id)
+    cards = decks.get_cards(deck_id, page, page_size)
     if not deck:
         abort(404)
 
     if deck[3] == session["user_id"]:
-        return render_template("deck.html", deck=deck, cards=cards, new_card=True)
+        return render_template("deck.html",
+                               page=page,
+                               page_count=page_count,
+                               deck=deck, cards=cards,
+                               new_card=True)
     abort(403)
 
 @app.route("/add_card", methods=["POST"])
@@ -176,15 +222,31 @@ def add_card():
 
 
 @app.route("/edit_deck/<int:deck_id>")
-def edit_cards(deck_id):
+@app.route("/edit_deck/<int:deck_id>/<int:page>")
+def edit_cards(deck_id, page=1):
     require_login()
-    cards = decks.get_cards(deck_id)
+    page_size = 5
+    card_count = decks.card_count(deck_id)
+    page_count = math.ceil(card_count / page_size)
+    page_count = max(page_count, 1)
+    if page < 1:
+        return redirect("/edit_deck/" + str(deck_id) + "/1")
+    if page > page_count:
+        return redirect("/edit_deck/" + str(deck_id) + "/" + str(page))
+    
+
+    cards = decks.get_cards(deck_id, page, page_size)
     deck = decks.get_deck(deck_id)
     if not deck:
         abort(404)
 
     if deck[3] == session["user_id"]:
-        return render_template("edit_deck.html", cards=cards, deck=deck, card_id=-1)
+        return render_template("edit_deck.html",
+                               page=page,
+                               page_count=page_count,
+                               cards=cards,
+                               deck=deck,
+                               card_id=-1)
     abort(403)
 
 @app.route("/edit_deck_name_and_description/<int:deck_id>", methods=["POST"])
@@ -215,14 +277,14 @@ def delete_card(card_id):
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
-@app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
-def edit_card(deck_id, card_id):
+@app.route("/edit_card/edit/<int:deck_id>/<int:page>/<int:page_count>/<int:card_id>", methods=["POST"])
+def edit_card(deck_id, page, page_count, card_id):
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    cards = decks.get_cards(deck_id)
+    cards = decks.get_cards(deck_id, page, 5)
     deck = decks.get_deck(deck_id)
-    return render_template("edit_deck.html", cards=cards, deck=deck, card_id=card_id)
+    return render_template("edit_deck.html", page=page, page_conut=page_count, cards=cards, deck=deck, card_id=card_id)
 
 @app.route("/edit_card/update/<int:deck_id>/<int:card_id>", methods=["POST"])
 def update_card(deck_id, card_id):
@@ -265,11 +327,20 @@ def search():
     return render_template("search.html", results=results, query=query)
 
 @app.route("/user/<int:user_id>/<username>")
-def user_page(user_id, username):
+@app.route("/user/<int:user_id>/<username>/<int:page>")
+def user_page(user_id, username, page=1):
+    page_size = 5
+    deck_count = decks.deck_count_for_user(user_id)
+    page_count = math.ceil(deck_count / page_size)
+    page_count = max(page_count, 1)
+    if page < 1:
+        return redirect("/user/" + str(user_id) + "/" + str(username) + "/1")
+    if page > page_count:
+        return redirect("/user/" + str(user_id) + "/" + str(username) + "/" + str(page_count))
+    
     user = users.get_user(username)
-    print(user)
-    deck = decks.get_users_decks(user_id)
-    return render_template("user.html", user=user, decks=deck)
+    deck_list = decks.get_users_decks(user_id, page, page_size)
+    return render_template("user.html", page=page, page_count=page_count, user=user, decks=deck_list)
 
 @app.route("/categories/<int:deck_id>")
 def category_select_page(deck_id):

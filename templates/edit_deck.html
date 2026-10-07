@@ -30,7 +30,7 @@
         <input type="submit" value="delete" />
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
     </form>
-    <form action="/edit_card/edit/{{ card.deck_id }}/{{ card.id }}" method="post">
+    <form action="/edit_card/edit/{{ card.deck_id }}/{{ page }}/{{ page_count }}/{{ card.id }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="edit" />
     </form>
@@ -48,4 +48,10 @@
     </form>
     {% endif %}
     {% endfor %}
+    <p>
+        <a href="/edit_deck/{{ deck.id }}/{{ page - 1 }}">&lt;&lt;</a>
+        Sivu {{ page }}/{{ page_count }}
+        <a href="/edit_deck/{{ deck.id }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+    <hr />
 </body>
