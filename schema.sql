@@ -39,3 +39,5 @@ CREATE TABLE Rating(
     rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 5),
     deck_id INTEGER NOT NULL REFERENCES Decks
 );
+
+CREATE INDEX idx_deck_cards ON Cards (deck_id);
