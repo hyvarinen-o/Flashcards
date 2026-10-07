@@ -15,6 +15,7 @@
         <a>Edit description:</a><br />
         <textarea type="textarea" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
         <br />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit changes" />
     </form>
     {% for message in get_flashed_messages() %}
@@ -30,6 +31,7 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
     </form>
     <form action="/edit_card/edit/{{ card.deck_id }}/{{ card.id }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="edit" />
     </form>
     {% elif card.id == card_id %}

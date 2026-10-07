@@ -26,10 +26,10 @@ def register():
         return render_template("register.html", filled={})
 
     if request.method == "POST":
-        username = request.form["username"]
-        password1 = request.form["password1"]
-        password2 = request.form["password2"]
-        if not username or not password1 or password2 or len(username) > 30 or len(password1) > 200:
+        username = request.form["username"].rstrip()
+        password1 = request.form["password1"].rstrip()
+        password2 = request.form["password2"].rstrip()
+        if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 200:
             flash("ERROR: Invalid username or password")
             return render_template("register.html", filled={})
         if len(username.strip(" ")) < 1 or len(password1.strip(" ")) < 1:
@@ -58,8 +58,8 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form["username"].rstrip()
+    password = request.form["password"].rstrip()
 
     user_id = users.check_login(username, password)
     if user_id == None:
@@ -85,8 +85,8 @@ def new_deck():
 
 @app.route("/add_card_field", methods=["POST"])
 def add_card_field():
-    deck_name = request.form["name"]
-    description = request.form["description"]
+    deck_name = request.form["name"].rstrip()
+    description = request.form["description"].rstrip()
     questions = request.form.getlist("questions[]")
     answers = request.form.getlist("answers[]")
 
@@ -105,8 +105,8 @@ def create_deck():
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    name = request.form["name"]
-    description = request.form["description"]
+    name = request.form["name"].rstrip()
+    description = request.form["description"].rstrip()
     questions = request.form.getlist("questions[]")
     answers = request.form.getlist("answers[]")
     if not name or not description or len(name) > 30 or len(description) > 150:
@@ -130,7 +130,7 @@ def create_deck():
         date = datetime.datetime.now().date()
         deck_id = decks.create_deck(name, description, session["user_id"], date)
         for card in cards:
-            decks.add_card(card["question"], card["answer"], deck_id)
+            decks.add_card(card["question"].rstrip(), card["answer"].rstrip(), deck_id)
         return redirect("/deck/" + str(deck_id))
     else:
         date = datetime.datetime.now().date()
@@ -164,8 +164,8 @@ def add_card():
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    question = request.form["question"]
-    answer = request.form["answer"]
+    question = request.form["question"].rstrip()
+    answer = request.form["answer"].rstrip()
     if not question or not answer or len(question) > 60 or len(answer) > 60:
         abort(403)
     if len(question.strip(" ")) < 1 or len(answer.strip(" ")) < 1:
@@ -189,8 +189,13 @@ def edit_cards(deck_id):
 
 @app.route("/edit_deck_name_and_description/<int:deck_id>", methods=["POST"])
 def edit_deck_name(deck_id):
-    name = request.form["deck_name"]
-    description = request.form["description"]
+    require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
+    name = request.form["deck_name"].rstrip()
+    description = request.form["description"].rstrip()
+    
     if not name or not description or len(name) > 30 or len(description) > 150:
         flash("Invalid name or description")
         return redirect("/edit_deck/" + str(deck_id))
@@ -213,16 +218,19 @@ def delete_card(card_id):
 @app.route("/edit_card/edit/<int:deck_id>/<int:card_id>", methods=["POST"])
 def edit_card(deck_id, card_id):
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     cards = decks.get_cards(deck_id)
-    return render_template("edit_deck.html", cards=cards, deck_id=deck_id, card_id=card_id)
+    deck = decks.get_deck(deck_id)
+    return render_template("edit_deck.html", cards=cards, deck=deck, card_id=card_id)
 
 @app.route("/edit_card/update/<int:deck_id>/<int:card_id>", methods=["POST"])
 def update_card(deck_id, card_id):
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    q = request.form["question"]
-    a = request.form["answer"]
+    q = request.form["question"].rstrip()
+    a = request.form["answer"].rstrip()
     if not q or not a or len(q) > 60 or len(a) > 60:
         flash("Invalid card parameters")
         return redirect("/edit_deck/" + str(deck_id))
@@ -252,23 +260,28 @@ def delete_deck(deck_id):
 
 @app.route("/search")
 def search():
-    query = request.args.get("query")
+    query = request.args.get("query").rstrip()
     results = decks.search(query)
     return render_template("search.html", results=results, query=query)
 
 @app.route("/user/<int:user_id>/<username>")
 def user_page(user_id, username):
     user = users.get_user(username)
+    print(user)
     deck = decks.get_users_decks(user_id)
     return render_template("user.html", user=user, decks=deck)
 
 @app.route("/categories/<int:deck_id>")
 def category_select_page(deck_id):
+    require_login()
     categories = decks.get_categories()
     return render_template("category_select.html", categories=categories, deck_id=deck_id, new_category=False)
 
 @app.route("/add_categories/<int:deck_id>", methods=["POST"])
 def add_categories(deck_id):
+    require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     category_id_list = request.form.getlist("categories")
     if category_id_list != []:
         for category_id in category_id_list:
@@ -278,12 +291,13 @@ def add_categories(deck_id):
 
 @app.route("/create_category")
 def create_category_page():
+    require_login()
     return render_template("new_category.html")
 
 @app.route("/create_new_category", methods=["POST"])
 def create_new_category():
     require_login()
-    category = request.form["category"]
+    category = request.form["category"].rstrip()
     if not category or len(category) > 50 or len(category.strip(" ")) < 1:
         flash("Invalid category")
     if decks.check_existing_category(category):
@@ -296,6 +310,8 @@ def create_new_category():
 @app.route("/add_rating/<int:deck_id>", methods=["POST"])
 def add_rating_to_deck(deck_id):
     require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     rating = request.form["rating"]
     if decks.check_existing_rating(session["user_id"], deck_id):
         decks.add_rating_to_deck(session["user_id"], rating, deck_id)

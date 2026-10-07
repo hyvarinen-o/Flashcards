@@ -19,7 +19,9 @@
     <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
     {% endfor %}
     <br />
+    {% if session["user_id"] == deck.user_id  %}
     <a href="/categories/{{ deck.id }}">Add category</a>
+    {% endif %}
     <p>Cards:</p>
 
     {% for card in cards %}
@@ -53,6 +55,7 @@
     <form action="/add_rating/{{ deck.id }}" method="post">
         <label for="rating">Rate this deck (1-5):</label><br/>
         <input type="number" id="rating" name="rating" min="1" max="5" step="1" value="5">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit rating">
     </form>
     {% for messsage in get_flashed_messages() %}

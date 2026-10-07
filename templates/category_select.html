@@ -7,6 +7,7 @@
     <h2>Select categories for your deck</h2>
     {% for category in categories %}
     <form action="/add_categories/{{ deck_id }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="checkbox" id="{{ category.category }}" name="categories" value="{{ category.id }}"/>
         <label for="{{ category.category }}">{{ category.category }}</label><br>
     {% endfor %}
