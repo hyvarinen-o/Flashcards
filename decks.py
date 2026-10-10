@@ -156,6 +156,13 @@ def check_for_duplicate_category(category_id, deck_id):
         return True
     return False
 
+def delete_category_from_deck(deck_id, category_id):
+    sql = """DELETE FROM Decks_categories
+            WHERE category_id = ?
+            AND deck_id = ?"""
+    result = db.execute(sql, params=[category_id, deck_id])
+    return result
+
 def get_categories_for_decks():
     sql = """SELECT d.deck_id, c.category
         FROM Decks_categories d
@@ -165,7 +172,7 @@ def get_categories_for_decks():
     return result
 
 def get_categories_for_deck(deck_id):
-    sql = """ SELECT c.category
+    sql = """ SELECT c.category, d.category_id
         FROM Decks_categories d
         JOIN Categories c
         ON c.id = d.category_id AND d.deck_id = ?"""

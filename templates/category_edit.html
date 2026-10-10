@@ -13,6 +13,22 @@
     {% endfor %}
         <button type="submit">Submit selection</button>
     </form>
+    <hr />
+    <h3><b>Delete categories from deck:</b></h3>
+    {% if decks_categories != [] %}
+    {% for category in decks_categories %}
+    <form action="/delete_category_from_deck/{{ deck_id }}/{{ category.category_id }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+        <a>{{ category.category }}</a>: 
+        <input type="submit" value="Delete"/>
+    </form>
+    {% endfor %}
+    {% else %}
+    <p>No categories added yet.</p>
+    {% endif %}
+
+    <hr />
     <h3>Couldn't find what you we're looking for?</h3>
     <a href="/create_category">Create new category</a>
+    <p><a href="/deck/{{ deck_id }}">Go Back</a></p>
 </body>

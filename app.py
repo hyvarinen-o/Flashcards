@@ -342,11 +342,15 @@ def user_page(user_id, username, page=1):
     deck_list = decks.get_users_decks(user_id, page, page_size)
     return render_template("user.html", page=page, page_count=page_count, user=user, decks=deck_list)
 
-@app.route("/categories/<int:deck_id>")
-def category_select_page(deck_id):
+@app.route("/edit_categories/<int:deck_id>")
+def category_edit_page(deck_id):
     require_login()
     categories = decks.get_categories()
-    return render_template("category_select.html", categories=categories, deck_id=deck_id, new_category=False)
+    decks_categories = decks.get_categories_for_deck(deck_id)
+    return render_template("category_edit.html",
+                           categories=categories,
+                           deck_id=deck_id,
+                           decks_categories = decks_categories)
 
 @app.route("/add_categories/<int:deck_id>", methods=["POST"])
 def add_categories(deck_id):
@@ -359,6 +363,16 @@ def add_categories(deck_id):
             if decks.check_for_duplicate_category(category_id, deck_id):
                 decks.add_category_to_deck(category_id, deck_id)
     return redirect("/deck/" + str(deck_id))
+
+@app.route("/delete_category_from_deck/<int:deck_id>/<int:category_id>", methods=["POST"])
+def delete_category_from_deck(deck_id, category_id):
+    require_login()
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+    decks.delete_category_from_deck(deck_id, category_id)
+    return redirect("/edit_categories/" + str(deck_id))
+    
+
 
 @app.route("/create_category")
 def create_category_page():

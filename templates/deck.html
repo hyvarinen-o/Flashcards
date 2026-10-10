@@ -20,7 +20,7 @@
     {% endfor %}
     <br />
     {% if session["user_id"] == deck.user_id  %}
-    <a href="/categories/{{ deck.id }}">Add category</a>
+    <a href="/edit_categories/{{ deck.id }}">Edit categories</a>
     {% endif %}
     <p>Cards:</p>
 
@@ -69,5 +69,5 @@
     {% endfor %}
     {% endif %}
     <p></p>
-    <a href="/">Go back</a>
+    <a href="/">Back to frontpage</a>
 </body>
