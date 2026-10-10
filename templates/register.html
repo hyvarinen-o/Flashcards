@@ -11,10 +11,10 @@
     <form action="/register", method="post">
         <p>Enter username (max 30 characters)</p>
         <input type="text" name="username" required maxlenght="30" value="{{ filled.username }}"/>
-        <p>Enter password</p>
-        <input type="text" name="password1" required maxlenght="200"/>
+        <p>Enter password (max 100 characters)</p>
+        <input type="text" name="password1" required maxlenght="100"/>
         <p>Enter password again</p>
-        <input type="text" name="password2" required maxlength="200"/>
+        <input type="text" name="password2" required maxlength="100"/>
         <br>
         <input type="submit" value="create" />
     </form>

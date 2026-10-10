@@ -13,6 +13,7 @@
     {% endfor %}
         <button type="submit">Submit selection</button>
     </form>
+    {{ get_flashed_messages()[0] }}
     <hr />
     <h3><b>Delete categories from deck:</b></h3>
     {% if decks_categories != [] %}

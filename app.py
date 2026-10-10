@@ -44,7 +44,7 @@ def register():
         username = request.form["username"].rstrip()
         password1 = request.form["password1"].rstrip()
         password2 = request.form["password2"].rstrip()
-        if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 200:
+        if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 100:
             flash("ERROR: Invalid username or password")
             return render_template("register.html", filled={})
         if len(username.strip(" ")) < 1 or len(password1.strip(" ")) < 1:
@@ -366,7 +366,9 @@ def add_categories(deck_id):
         for category_id in category_id_list:
             if decks.check_for_duplicate_category(category_id, deck_id):
                 decks.add_category_to_deck(category_id, deck_id)
-    return redirect("/deck/" + str(deck_id))
+        return redirect("/deck/" + str(deck_id))
+    flash("Please select atleast 1 category")
+    return redirect("/edit_categories/" + str(deck_id))
 
 @app.route("/delete_category_from_deck/<int:deck_id>/<int:category_id>", methods=["POST"])
 def delete_category_from_deck(deck_id, category_id):
