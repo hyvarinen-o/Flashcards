@@ -14,6 +14,15 @@ def require_login():
     if "user_id" not in session:
         abort(403)
 
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html"), 404
+
+@app.errorhandler(403)
+def no_access(e):
+    return render_template("403.html"), 403
+
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
