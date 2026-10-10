@@ -1,4 +1,4 @@
-import datetime, math
+import datetime, math, re
 from flask import Flask
 from flask import redirect, render_template, request, abort
 from flask import session, flash
@@ -46,6 +46,10 @@ def register():
         password2 = request.form["password2"].rstrip()
         if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 100:
             flash("ERROR: Invalid username or password")
+            return render_template("register.html", filled={})
+        valid = r"[a-zA-ZåäöÅÄÖ]"
+        if not re.search(valid, username):
+            flash("ERROR: Username must contain atleast one letter (a-ö)")
             return render_template("register.html", filled={})
         if len(username.strip(" ")) < 1 or len(password1.strip(" ")) < 1:
             flash("ERROR: Username and password must contain characters")
