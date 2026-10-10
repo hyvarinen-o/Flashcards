@@ -18,7 +18,7 @@ CREATE TABLE Cards(
     id INTEGER PRIMARY KEY,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
-    deck_id INTEGER NOT NULL REFERENCES Decks,
+    deck_id INTEGER NOT NULL REFERENCES Decks (id),
     image BLOB
 );
 
@@ -29,15 +29,15 @@ CREATE TABLE Categories(
 
 CREATE TABLE Decks_categories(
     id INTEGER PRIMARY KEY,
-    deck_id INTEGER NOT NULL REFERENCES Decks,
-    category_id INTEGER NOT NULL REFERENCES Categories
+    deck_id INTEGER NOT NULL REFERENCES Decks (id),
+    category_id INTEGER NOT NULL REFERENCES Categories (id)
 );
 
 CREATE TABLE Rating(
     id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES Users,
+    user_id INTEGER NOT NULL REFERENCES Users (id),
     rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 5),
-    deck_id INTEGER NOT NULL REFERENCES Decks
+    deck_id INTEGER NOT NULL REFERENCES Decks (id)
 );
 
 CREATE INDEX idx_deck_cards ON Cards (deck_id);
