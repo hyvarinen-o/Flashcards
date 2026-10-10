@@ -345,6 +345,10 @@ def user_page(user_id, username, page=1):
 @app.route("/edit_categories/<int:deck_id>")
 def category_edit_page(deck_id):
     require_login()
+    deck = decks.get_deck(deck_id)
+    if not deck or deck["user_id"] != session["user_id"]:
+        abort(403)
+    
     categories = decks.get_categories()
     decks_categories = decks.get_categories_for_deck(deck_id)
     return render_template("category_edit.html",
