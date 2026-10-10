@@ -378,14 +378,13 @@ def delete_category_from_deck(deck_id, category_id):
     
 
 
-@app.route("/create_category", methods=["POST"])
-def create_category_page():
+@app.route("/create_category/<int:deck_id>", methods=["POST", "GET"])
+def create_category_page(deck_id):
     require_login()
-    deck_id = request.form["deck_id"]
     return render_template("new_category.html", deck_id=deck_id)
 
-@app.route("/create_new_category", methods=["POST"])
-def create_new_category():
+@app.route("/create_new_category/<int:deck_id>", methods=["POST"])
+def create_new_category(deck_id):
     require_login()
     category = request.form["category"].rstrip()
     if not category or len(category) > 50 or len(category.strip(" ")) < 1:
@@ -393,9 +392,9 @@ def create_new_category():
     if decks.check_existing_category(category):
         decks.create_category(category)
         flash("Category added successfully")
-        return redirect("/create_category")
+        return redirect("/create_category/" + str(deck_id))
     flash("Category already exists!")
-    return redirect("/create_category")
+    return redirect("/create_category" + str(deck_id))
 
 @app.route("/add_rating/<int:deck_id>", methods=["POST"])
 def add_rating_to_deck(deck_id):

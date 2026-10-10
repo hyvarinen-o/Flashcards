@@ -6,7 +6,7 @@
 <body>
     <h2>Create a new category</h2>
     <p>Max 50 characters</p>
-    <form action="/create_new_category" method="post">
+    <form action="/create_new_category/{{ deck_id }}" method="post">
         <input type="text" name="category" maxlength="50" required />
         <input type="submit" value="Submit">
     </form>
