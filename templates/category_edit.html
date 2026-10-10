@@ -29,6 +29,10 @@
 
     <hr />
     <h3>Couldn't find what you we're looking for?</h3>
-    <a href="/create_category">Create new category</a>
+    <form action="/create_category" method="post">
+        <input type="hidden"  name="deck_id" value="{{ deck_id }}" />
+        <input type="submit" value="Create a new category"/>
+    </form>
+    <hr/>
     <p><a href="/deck/{{ deck_id }}">Go Back</a></p>
 </body>

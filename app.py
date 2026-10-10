@@ -374,10 +374,11 @@ def delete_category_from_deck(deck_id, category_id):
     
 
 
-@app.route("/create_category")
+@app.route("/create_category", methods=["POST"])
 def create_category_page():
     require_login()
-    return render_template("new_category.html")
+    deck_id = request.form["deck_id"]
+    return render_template("new_category.html", deck_id=deck_id)
 
 @app.route("/create_new_category", methods=["POST"])
 def create_new_category():
