@@ -112,11 +112,12 @@ def search(query):
              FROM Decks d
              JOIN Users u ON u.id = d.user_id
              LEFT JOIN Decks_categories dc ON dc.deck_id = d.id
-             JOIN Categories c on dc.category_id = c.id 
+             LEFT JOIN Categories c on dc.category_id = c.id 
              WHERE (d.name LIKE ?
              OR u.username LIKE ?
              OR d.description LIKE ?
              OR c.category LIKE ?)
+             GROUP BY d.id
              ORDER BY d.created_at DESC"""
     
     query_sql = "%" + query + "%"
