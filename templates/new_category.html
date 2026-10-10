@@ -10,8 +10,6 @@
         <input type="text" name="category" maxlength="50" required />
         <input type="submit" value="Submit">
     </form>
-    {% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
-    {% endfor %}
+    <b>{{ get_flashed_messages()[0] }}</b><br/>
     <a href="/edit_categories/{{ deck_id }}">Go back</a>
 </body>

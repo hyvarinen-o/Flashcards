@@ -42,6 +42,7 @@
 
     {% if session["user_id"] == deck.user_id  and new_card == False%}
     <a href="/new_card_form/{{ deck.id }}">Add new cards</a>
+    <b>{{ get_flashed_messages()[0 ]}}</b>
     <p></p>
     <a href="/edit_deck/{{ deck.id }}">Edit deck</a>
     <p></p>

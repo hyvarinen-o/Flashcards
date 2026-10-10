@@ -18,10 +18,7 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit changes" />
     </form>
-    {% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
-    {% endfor %}
-
+    <h4><b>{{ get_flashed_messages()[0] }}</b></h4>
     {% for card in cards %}
     <hr />
     {% if card.id != card_id %}

@@ -9,6 +9,7 @@ import config
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+valid = r"[a-zA-ZåäöÅÄÖ]"
 def require_login():
     if "user_id" not in session:
         abort(403)
@@ -47,7 +48,6 @@ def register():
         if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 100:
             flash("ERROR: Invalid username or password")
             return render_template("register.html", filled={})
-        valid = r"[a-zA-ZåäöÅÄÖ]"
         if not re.search(valid, username):
             flash("ERROR: Username must contain atleast one letter (a-ö)")
             return render_template("register.html", filled={})
@@ -124,25 +124,28 @@ def create_deck():
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    name = request.form["name"].rstrip()
-    description = request.form["description"].rstrip()
+    name = request.form["name"].strip()
+    description = request.form["description"].strip()
     questions = request.form.getlist("questions[]")
     answers = request.form.getlist("answers[]")
     if not name or not description or len(name) > 30 or len(description) > 150:
         flash("Invalid name or description")
         return redirect("/new_deck")
-    if len(name.strip(" ")) < 1 or len(description.strip(" ")) < 1:
-        flash("Invalid name or description")
+    if not re.search(valid, name) or not re.search(valid, description):
+        flash("Name and description must contain letters")
         return redirect("/new_deck")
+    
 
     if questions and answers:
         cards = [] 
         for q, a in zip(questions, answers):
+            q = q.strip()
+            a = a.strip()
             if not q or not a or len(q) > 60 or len(a) > 60:
                 flash("Invalid card parameters")
                 return redirect("/new_deck")
-            if len(q.strip(" ")) < 1 or len(a.strip(" ")) < 1:
-                flash("Invalid card parameters")
+            if not re.search(valid, a) or not re.search(valid, q):
+                flash("Card parameters must contain letters")
                 return redirect("/new_deck")
             cards.append({"question": q, "answer": a})
 
@@ -216,11 +219,14 @@ def add_card():
         abort(403)
     question = request.form["question"].rstrip()
     answer = request.form["answer"].rstrip()
-    if not question or not answer or len(question) > 60 or len(answer) > 60:
-        abort(403)
-    if len(question.strip(" ")) < 1 or len(answer.strip(" ")) < 1:
-        abort(403)
     deck_id = request.form["deck_id"]
+    if not question or not answer or len(question) > 60 or len(answer) > 60:
+        flash("Card not added: invalid card parameters")
+        return redirect("/deck/" + str(deck_id))
+    if not re.search(valid, question) or not re.search(valid, answer):
+        flash("Card not added: card parameters must contain letters")
+        return redirect("/deck/" + str(deck_id))
+    
     decks.add_card(question, answer, deck_id)
     return redirect("/deck/" + str(deck_id))
 
@@ -236,7 +242,7 @@ def edit_cards(deck_id, page=1):
     if page < 1:
         return redirect("/edit_deck/" + str(deck_id) + "/1")
     if page > page_count:
-        return redirect("/edit_deck/" + str(deck_id) + "/" + str(page))
+        return redirect("/edit_deck/" + str(deck_id) + "/" + str(page_count))
     
 
     cards = decks.get_cards(deck_id, page, page_size)
@@ -263,10 +269,10 @@ def edit_deck_name(deck_id):
     description = request.form["description"].rstrip()
     
     if not name or not description or len(name) > 30 or len(description) > 150:
-        flash("Invalid name or description")
+        flash("Changes not applied: invalid name or description")
         return redirect("/edit_deck/" + str(deck_id))
-    if len(name.strip(" ")) < 1 or len(description.strip(" ")) < 1:
-        flash("Invalid name or description")
+    if not re.search(valid, name) or not re.search(valid, description):
+        flash("Changes not applied: invalid name or description")
         return redirect("/edit_deck/" + str(deck_id))
 
     decks.update_deck(name, description, deck_id)
@@ -298,10 +304,10 @@ def update_card(deck_id, card_id):
     q = request.form["question"].rstrip()
     a = request.form["answer"].rstrip()
     if not q or not a or len(q) > 60 or len(a) > 60:
-        flash("Invalid card parameters")
+        flash("Changes not applied: invalid card parameters")
         return redirect("/edit_deck/" + str(deck_id))
-    if len(q.strip(" ")) < 1 or len(a.strip(" ")) < 1:
-        flash("Invalid card parameters")
+    if not re.search(valid, q) or not re.search(valid, a):
+        flash("Changes not applied: card parameters must contain letters")
         return redirect("/edit_deck/" + str(deck_id))
     deck_id = decks.update_card(card_id, q, a)
     return redirect("/edit_deck/" + str(deck_id))
@@ -393,8 +399,12 @@ def create_category_page(deck_id):
 def create_new_category(deck_id):
     require_login()
     category = request.form["category"].rstrip()
-    if not category or len(category) > 50 or len(category.strip(" ")) < 1:
-        flash("Invalid category")
+    if not category or len(category) > 50:
+        flash("Category not created: Invalid category")
+        return redirect("/create_category/" + str(deck_id))
+    if not re.search(valid, category):
+        flash("Category not created: Category must contain letters")
+        return redirect("/create_category/" + str(deck_id))
     if decks.check_existing_category(category):
         decks.create_category(category)
         flash("Category added successfully")

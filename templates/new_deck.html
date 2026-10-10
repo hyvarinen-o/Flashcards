@@ -5,7 +5,7 @@
 
 <body>
     {% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
+    <h3><b>{{ message }}</b></h3>
     {% endfor %}
     <form action="/create_deck" method="post">
         <p>Deck name:</p>

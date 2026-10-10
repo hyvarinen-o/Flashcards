@@ -6,7 +6,7 @@
 
 <body>
     {% if session.username %}
-    <h1>Flashdecks</h1>
+    <h1>Flashcards</h1>
     <h2>Welcome <a href="/user/{{session.user_id}}/{{session.username}}">{{session.username}}</a></h2>
     <form action="/logout" method="post">
         <button>logout</button>
