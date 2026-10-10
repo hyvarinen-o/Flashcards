@@ -10,7 +10,7 @@
 * Käyttäjä pystyy valitsemaan korttipakalle yhden tai useamman luokittelun (esim. kielet, termit, kuva/sana yhteydet).
 * Toissijaiseksi tietokohteeksi käyttäjät pystyvät lisäämään pakkoihin arvostelun.
 
-##Ohjeet sovelluksen testaamiseen
+## Ohjeet sovelluksen testaamiseen
 Asenna virtuaaliympäristö:
 $ python3 -m venv venv
 
