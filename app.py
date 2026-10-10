@@ -42,7 +42,7 @@ def index(page=1):
                         page=page,
                         page_count=page_count,
                         deck_list=deck_list,
-                        ratings_list=ratings_list, 
+                        ratings_list=ratings_list,
                         category_list=category_list)
 
 @app.route("/register", methods=["POST", "GET"])
@@ -90,7 +90,7 @@ def login():
     password = request.form["password"].rstrip()
 
     user_id = users.check_login(username, password)
-    if user_id == None:
+    if user_id is None:
         flash("ERROR: Incorrect username or password")
         return redirect("/login_page")
     session["username"] = username
@@ -119,14 +119,17 @@ def add_card_field():
     answers = request.form.getlist("answers[]")
 
     cards = []
-    if questions and answers: 
+    if questions and answers:
         for q, a in zip(questions, answers):
             cards.append({"question": q, "answer": a})
         cards.append({"question": "", "answer": ""})
     else:
         cards.append({"question": "", "answer": ""})
 
-    return render_template("new_deck.html", deck_name=deck_name, description=description, cards=cards)
+    return render_template("new_deck.html",
+                           deck_name=deck_name,
+                           description=description,
+                           cards=cards)
 
 @app.route("/create_deck", methods=["POST"])
 def create_deck():
@@ -143,10 +146,9 @@ def create_deck():
     if not re.search(valid, name) or not re.search(valid, description):
         flash("Name and description must contain letters")
         return redirect("/new_deck")
-    
 
     if questions and answers:
-        cards = [] 
+        cards = []
         for q, a in zip(questions, answers):
             q = q.strip()
             a = a.strip()
@@ -163,10 +165,9 @@ def create_deck():
         for card in cards:
             decks.add_card(card["question"].rstrip(), card["answer"].rstrip(), deck_id)
         return redirect("/deck/" + str(deck_id))
-    else:
-        date = datetime.datetime.now().date()
-        deck_id = decks.create_deck(name, description, session["user_id"], date)
-        return redirect("/deck/" + str(deck_id))
+    date = datetime.datetime.now().date()
+    deck_id = decks.create_deck(name, description, session["user_id"], date)
+    return redirect("/deck/" + str(deck_id))
 
 @app.route("/deck/<int:deck_id>")
 @app.route("/deck/<int:deck_id>/<int:page>")
@@ -183,7 +184,7 @@ def show_deck(deck_id, page=1):
     deck = decks.get_deck(deck_id)
     cards = decks.get_cards(deck_id, page, page_size)
     categories = decks.get_categories_for_deck(deck_id)
-    ratings = decks.get_rating_for_deck(deck_id)    
+    ratings = decks.get_rating_for_deck(deck_id)
     if not deck:
         abort(404)
     return render_template("deck.html",
@@ -235,7 +236,6 @@ def add_card():
     if not re.search(valid, question) or not re.search(valid, answer):
         flash("Card not added: card parameters must contain letters")
         return redirect("/deck/" + str(deck_id))
-    
     decks.add_card(question, answer, deck_id)
     return redirect("/deck/" + str(deck_id))
 
@@ -252,7 +252,6 @@ def edit_cards(deck_id, page=1):
         return redirect("/edit_deck/" + str(deck_id) + "/1")
     if page > page_count:
         return redirect("/edit_deck/" + str(deck_id) + "/" + str(page_count))
-    
 
     cards = decks.get_cards(deck_id, page, page_size)
     deck = decks.get_deck(deck_id)
@@ -272,11 +271,10 @@ def edit_cards(deck_id, page=1):
 def edit_deck_name(deck_id):
     require_login()
     if session["csrf_token"] != request.form["csrf_token"]:
-            abort(403)
+        abort(403)
 
     name = request.form["deck_name"].rstrip()
     description = request.form["description"].rstrip()
-    
     if not name or not description or len(name) > 30 or len(description) > 150:
         flash("Changes not applied: invalid name or description")
         return redirect("/edit_deck/" + str(deck_id))
@@ -325,7 +323,7 @@ def update_card(deck_id, card_id):
 def verify_deletion(deck_id):
     require_login()
     if decks.get_deck(deck_id)[3] != session["user_id"]:
-            abort(403)
+        abort(403)
     return render_template("delete.html", deck_id = deck_id)
 
 @app.route("/delete_deck/<int:deck_id>", methods=["POST"])
