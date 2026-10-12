@@ -193,34 +193,7 @@ def show_deck(deck_id, page=1):
                            deck=deck,
                            cards=cards,
                            categories=categories,
-                           ratings=ratings,
-                           new_card=False)
-
-@app.route("/new_card_form/<int:deck_id>")
-@app.route("/new_card_form/<int:deck_id>/<int:page>")
-def add_card_form(deck_id, page=0):
-    require_login()
-    page_size = 5
-    card_count = decks.card_count(deck_id)
-    page_count = math.ceil(card_count / page_size)
-    page_count = max(page_count, 1)
-    if page < 1:
-        return redirect("/new_card_form/" + str(deck_id) + "/1")
-    if page > page_count:
-        return redirect("/new_card_form/" + str(deck_id) + "/" + str(page_count))
-
-    deck = decks.get_deck(deck_id)
-    cards = decks.get_cards(deck_id, page, page_size)
-    if not deck:
-        abort(404)
-
-    if deck[3] == session["user_id"]:
-        return render_template("deck.html",
-                               page=page,
-                               page_count=page_count,
-                               deck=deck, cards=cards,
-                               new_card=True)
-    abort(403)
+                           ratings=ratings)
 
 @app.route("/add_card", methods=["POST"])
 def add_card():
@@ -232,19 +205,19 @@ def add_card():
     deck_id = request.form["deck_id"]
     if not question or not answer or len(question) > 60 or len(answer) > 60:
         flash("Card not added: invalid card parameters")
-        return redirect("/deck/" + str(deck_id))
+        return redirect("/edit_deck/" + str(deck_id))
     if not re.search(valid, question) or not re.search(valid, answer):
         flash("Card not added: card parameters must contain letters")
-        return redirect("/deck/" + str(deck_id))
+        return redirect("/edit_deck/" + str(deck_id))
     decks.add_card(question, answer, deck_id)
-    return redirect("/deck/" + str(deck_id))
+    return redirect("/edit_deck/" + str(deck_id))
 
 
 @app.route("/edit_deck/<int:deck_id>")
 @app.route("/edit_deck/<int:deck_id>/<int:page>")
 def edit_cards(deck_id, page=1):
     require_login()
-    page_size = 5
+    page_size = 3
     card_count = decks.card_count(deck_id)
     page_count = math.ceil(card_count / page_size)
     page_count = max(page_count, 1)

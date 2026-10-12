@@ -10,7 +10,7 @@
     <p></p>
     <form action="/edit_deck_name_and_description/{{ deck.id }}" method="post">
         <a>Edit deck name:</a><br />
-        <input type="text" name="deck_name" value="{{ deck.name }}" required maxlenght="50"/>
+        <input type="text" name="deck_name" value="{{ deck.name }}" required maxlength="50"/>
         <p></p>
         <a>Edit description:</a><br />
         <textarea type="textarea" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
@@ -18,7 +18,10 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit changes" />
     </form>
+    
     <h4><b>{{ get_flashed_messages()[0] }}</b></h4>
+
+    <h3>Cards in deck:</h3>
     {% for card in cards %}
     <hr />
     {% if card.id != card_id %}
@@ -41,8 +44,6 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit"/>
     </form>
-
-    </form>
     {% endif %}
     {% endfor %}
     <p>
@@ -51,4 +52,20 @@
         <a href="/edit_deck/{{ deck.id }}/{{ page + 1 }}">&gt;&gt;</a>
     </p>
     <hr />
+
+    <!-- Uuden kortin lisäyslomake täällä -->
+    <h3>Add new card:</h3>
+    <form action="/add_card" method="post">
+        <p>
+            Question:<br>
+            <input type="text" name="question" required maxlength="60"/>
+        </p>
+        <p>
+            Answer:<br>
+            <input type="text" name="answer" required maxlength="60"/>
+        </p>
+        <input type="hidden" value="{{ deck.id }}" name="deck_id" />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+        <input type="submit" value="Add card"/>
+    </form>
 </body>
