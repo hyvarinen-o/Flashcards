@@ -98,10 +98,14 @@ def update_card(card_id, updated_question, updated_answer):
     return deck_id[0][0]
 
 def delete_deck(deck_id):
-    sql1 = "DELETE FROM Decks WHERE id = ?"
-    sql2 = "DELETE FROM Cards WHERE deck_id = ?"
-    result = db.execute(sql2, params=[deck_id])
-    result = db.execute(sql1, params=[deck_id])
+    sql_categories = "DELETE FROM Decks_categories WHERE deck_id = ?"
+    sql_cards = "DELETE FROM Cards WHERE deck_id = ?"
+    sql_ratings = "DELETE FROM Rating WHERE deck_id = ?"
+    sql_deck = "DELETE FROM Decks WHERE id = ?"
+    db.execute(sql_categories, params=[deck_id])
+    db.execute(sql_cards, params=[deck_id])
+    db.execute(sql_ratings, params=[deck_id])
+    db.execute(sql_deck, params=[deck_id])
     return True
 
 def search(query):
