@@ -356,11 +356,13 @@ def delete_category_from_deck(deck_id, category_id):
 @app.route("/create_category/<int:deck_id>", methods=["POST", "GET"])
 def create_category_page(deck_id):
     require_login()
+    verify_csrf()
     return render_template("new_category.html", deck_id=deck_id)
 
 @app.route("/create_new_category/<int:deck_id>", methods=["POST"])
 def create_new_category(deck_id):
     require_login()
+    verify_csrf()
     category = request.form["category"].rstrip()
     if not category or len(category) > 50:
         flash("Category not created: Invalid category")

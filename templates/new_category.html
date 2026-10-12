@@ -9,6 +9,7 @@
     <form action="/create_new_category/{{ deck_id }}" method="post">
         <input type="text" name="category" maxlength="50" required />
         <input type="submit" value="Submit">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
     </form>
     <b>{{ get_flashed_messages()[0] }}</b><br/>
     <a href="/edit_categories/{{ deck_id }}">Go back</a>
