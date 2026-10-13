@@ -20,8 +20,8 @@
     {% for category in decks_categories %}
     <form action="/delete_category_from_deck/{{ deck_id }}/{{ category.category_id }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <a>{{ category.category }}</a>: 
-        <input type="submit" value="Delete"/>
+        <label for="delete_category_{{ category.category_id }}">{{ category.category }}:</label>
+        <input type="submit" id="delete_category_{{ category.category_id }}" value="Delete"/>
     </form>
     {% endfor %}
     {% else %}
@@ -32,7 +32,8 @@
     <h3>Couldn't find what you we're looking for?</h3>
     <form action="/create_category/{{ deck_id }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="Create a new category"/>
+        <label for="create_category"></label>
+        <input type="submit" id="create_category" value="Create a new category"/>
     </form>
     <hr/>
     <p><a href="/deck/{{ deck_id }}">Go Back</a></p>
