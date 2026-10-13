@@ -356,7 +356,8 @@ def delete_category_from_deck(deck_id, category_id):
 @app.route("/create_category/<int:deck_id>", methods=["POST", "GET"])
 def create_category_page(deck_id):
     require_login()
-    verify_csrf()
+    if request.method == "POST":
+        verify_csrf()
     return render_template("new_category.html", deck_id=deck_id)
 
 @app.route("/create_new_category/<int:deck_id>", methods=["POST"])
@@ -375,7 +376,7 @@ def create_new_category(deck_id):
         flash("Category added successfully")
         return redirect("/create_category/" + str(deck_id))
     flash("Category already exists!")
-    return redirect("/create_category" + str(deck_id))
+    return redirect("/create_category/" + str(deck_id))
 
 @app.route("/add_rating/<int:deck_id>", methods=["POST"])
 def add_rating_to_deck(deck_id):
