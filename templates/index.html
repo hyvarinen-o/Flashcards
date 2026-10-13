@@ -9,10 +9,10 @@
     <h1>Flashcards</h1>
     <h2>Welcome <a href="/user/{{session.user_id}}/{{session.username}}">{{session.username}}</a></h2>
     <form action="/logout" method="post">
-        <button>logout</button>
+        <button type="submit">Logout</button>
     </form>
     <form action="/new_deck">
-        <button>New flashcard deck</button>
+        <button type="submit">New flashcard deck</button>
     </form>
 
     {% else %}
@@ -23,13 +23,13 @@
 
     {% endif %}
     <h1><b>Search</b></h1>
-    <a>Keyword or category:</a>
     <form action="/search" method="get">
     <p>
+      <label for="search">Keyword or category:</label><br />
       {% if query %}
-      <input type="text" name="query" value="{{ query }}" />
+      <input type="text" id="search name="query" value="{{ query }}" />
       {% else %}
-      <input type="text" name="query" />
+      <input type="text" id="search" name="query" />
       {% endif %}
     </p>
     <input type="submit" value="Search" />
@@ -38,13 +38,14 @@
     <h2><b>Decks</b></h2>
     {% for deck in deck_list %}
     <hr />
-    <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
-    <a><b>Categories: </b>  </a>
+    <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> Cards: {{ deck.total }}</p>
+    <p><b>Categories: </b>
     {% for category in category_list %}
     {% if category.deck_id == deck.id %}
     <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
     {% endif %}
     {% endfor %}
+    </p>
     {% for rating in ratings_list %}
     {% if rating.deck_id == deck.id %}
     <p><b>Rating:</b> {{ rating.average }}/5</p>
@@ -53,7 +54,6 @@
     <p><b>Description:</b> {{ deck.description }}</p>
     <p>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{ deck.username }}</a> at {{ deck.created_at }}</p>
     {% endfor %}
-    </p>
     <p>
     <a href="/{{ page - 1 }}">&lt;&lt;</a>
     Page {{ page }}/{{ page_count }}
@@ -61,3 +61,4 @@
     </p>
     <hr />
 </body>
+</html>
