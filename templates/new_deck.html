@@ -9,28 +9,35 @@
     <h3><b>{{ message }}</b></h3>
     {% endfor %}
     <form action="/create_deck" method="post">
-        <p>Deck name:</p>
-        <input type="text" name="name" value="{{ deck_name }}" required maxlength="30"/>
-        <p>Enter description: <br/>
-        <textarea type="text" name="description" rows="5" cols="40" required maxlength="150">{{ description }}</textarea>
-        <p>Cards:</p>
+        <p>
+        <label for="deck_name">Deck name:</label><br />
+        <input type="text" id="deck_name" name="name" value="{{ deck_name }}" required maxlength="30"/>
+        </p>
+        <p>
+        <label for="deck_description">Enter description:</label><br />
+        <textarea id="deck_description" name="description" rows="5" cols="40" required maxlength="150">{{ description }}</textarea>
+        </p>
+        <p><b>Cards:</b></p>
         {% for card in cards %}
         <div>
             <hr />
-            <a>Card {{ loop.index }}</a>
-            <br/>
-            <a>Question: </a>
-            <input type="text" name="questions[]" value="{{ card['question'] }}" required maxlength="60"/>
-            <br />
-            <a>Answer:</a>
-            <input type="text" name="answers[]" value="{{ card['answer'] }}" required maxlength="60"/>
+            <p>Card {{ loop.index }}</p>
+            <p>
+            <label for="question{{ loop.index }}">Question:</label><br />
+            <input type="text" id="question{{ loop.index }}" name="questions[]" value="{{ card['question'] }}" required maxlength="60"/>
+            </p>
+            <p>
+            <label for="answer{{ loop.index }}">Answer:</label><br />
+            <input type="text" id="answer{{ loop.index }}" name="answers[]" value="{{ card['answer'] }}" required maxlength="60"/>
+            </p>
         </div>
         {% endfor %}
-        <p></p>
+        <p>
         <button type="submit" formaction="/add_card_field">New card</button>
+        </p>
         <hr />
-        <p></p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Create Deck">
     </form>
 </body>
+</html>

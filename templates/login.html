@@ -9,11 +9,16 @@
     <p>{{ message }}</p>
     {% endfor %}
     <form action="/login" method="post">
-        <p>Enter username:</p>
-        <input type="text" name="username" required/>
-        <p>Enter password:</p>
-        <input type="text" name="password" required/>
-        <input type="submit" value="log in"/>
+        <p>
+        <label for="username">Enter username:</label><br />
+        <input type="text" id="username" name="username" required/>
+        </p>
+        <p>
+        <label for="password">Enter password:</label><br />
+        <input type="password" id="password" name="password" required/>
+        </p>
+        <input type="submit" value="Log in"/>
     </form>
     <p><a href="/">Go back</a></p>
 </body>
+</html>
