@@ -8,9 +8,9 @@
     <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
     <h3>Rating: 
     {% if ratings|length > 0 %}
-    <label>{{ ratings.average }}/5 ({{ ratings.count }} ratings)</label>
+    <a>{{ ratings.average }}/5 ({{ ratings.count }} ratings)</a>
     {% elif ratings|length == 0 %}
-    <label>No ratings yet</label>
+    <a>No ratings yet</a>
     {% endif %}
     </h3>
     <p>created at {{deck.created_at}}</p>
@@ -21,7 +21,8 @@
     <br />
     {% if session["user_id"] == deck.user_id  %}
     <form action="/edit_categories/{{ deck.id }}">
-        <input type="submit" value="Edit categories"/>
+        <label for="edit_categories"></label>
+        <input type="submit" id="edit_categories" value="Edit categories"/>
     </form>
     {% endif %}
     <p>Cards:</p>
@@ -52,7 +53,7 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit rating">
     </form>
-    {% for messsage in get_flashed_messages() %}
+    {% for message in get_flashed_messages() %}
     <p>{{ message }}</p>
     {% endfor %}
     {% endif %}

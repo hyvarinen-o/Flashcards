@@ -9,11 +9,11 @@
     <hr />
     <p></p>
     <form action="/edit_deck_name_and_description/{{ deck.id }}" method="post">
-        <a>Edit deck name:</a><br />
-        <input type="text" name="deck_name" value="{{ deck.name }}" required maxlength="50"/>
+        <label for="deck_name">Edit deck name:</label><br />
+        <input type="text" id="deck_name" name="deck_name" value="{{ deck.name }}" required maxlength="50"/>
         <p></p>
-        <a>Edit description:</a><br />
-        <textarea type="textarea" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
+        <label for="description">Edit description:</label><br />
+        <textarea type="textarea" id="description" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
         <br />
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit changes" />
@@ -39,8 +39,10 @@
     <p>{{ message }}</p>
     {% endfor %}
     <form action="/edit_card/update/{{ deck.id }}/{{ card.id }}" method="post">
-        <input type="text" value="{{card.question}}" name="question" required maxlength="100">
-        <input type="text" value="{{card.answer}}" name="answer" required maxlength="300"/>
+        <label for="edit_question_{{ card.id }}">Question:</label>
+        <input type="text" id="edit_question_{{ card.id }}" value="{{card.question}}" name="question" required maxlength="100">
+        <label for="edit_answer_{{ card.id }}">Answer:</label>
+        <input type="text" id="edit_answer_{{ card.id }}" value="{{card.answer}}" name="answer" required maxlength="300"/>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
         <input type="submit" value="Submit"/>
     </form>
@@ -53,16 +55,15 @@
     </p>
     <hr />
 
-    <!-- Uuden kortin lisäyslomake täällä -->
     <h3>Add new card:</h3>
     <form action="/add_card" method="post">
         <p>
-            Question:<br>
-            <input type="text" name="question" required maxlength="60"/>
+        <label for="new_question">Question:</label><br>
+        <input type="text" id="new_question" name="question" required maxlength="60"/>
         </p>
         <p>
-            Answer:<br>
-            <input type="text" name="answer" required maxlength="60"/>
+        <label for="new_answer">Answer:</label><br>
+        <input type="text" id="new_answer" name="answer" required maxlength="60"/>
         </p>
         <input type="hidden" value="{{ deck.id }}" name="deck_id" />
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
