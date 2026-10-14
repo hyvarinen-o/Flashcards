@@ -2,25 +2,34 @@
 
 <head>
     <title>Frontpage</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
+    <div class="header">
+        <h1>Flashcards</h1>
+    </div>
     {% if session.username %}
-    <h1>Flashcards</h1>
-    <h2>Welcome <a href="/user/{{session.user_id}}/{{session.username}}">{{session.username}}</a></h2>
-    <form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
-    <form action="/new_deck">
-        <button type="submit">New flashcard deck</button>
-    </form>
+    <h2>Logged in as <a href="/user/{{session.user_id}}/{{session.username}}">{{session.username}}</a></h2>
+    <div class="nav">
+        <form action="/logout" method="post">
+            <div class="btn">
+                <button type="submit">Logout</button>
+            </div>
+        </form>
+        <form action="/new_deck">
+            <div class="btn">
+                <button type="submit">New flashcard deck</button>
+            </div>
+        </form>
+    </div>
 
     {% else %}
-    <h1><b>Flashcards</b></h1> 
-    <a href="/register">Register</a>
-    or
-    <a href="/login_page">Login</a>
-
+    <div class="nav">
+        <a href="/register">Register</a>
+        or
+        <a href="/login_page">Login</a>
+    </div>
     {% endif %}
     <h1><b>Search</b></h1>
     <form action="/search" method="get">
@@ -35,25 +44,28 @@
     <input type="submit" value="Search" />
     </form>
 
-    <h2><b>Decks</b></h2>
-    {% for deck in deck_list %}
-    <hr />
-    <p><a href="/deck/{{ deck.id }}">{{ deck.name }}</a> Cards: {{ deck.total }}</p>
-    <p><b>Categories: </b>
-    {% for category in category_list %}
-    {% if category.deck_id == deck.id %}
-    <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
-    {% endif %}
-    {% endfor %}
-    </p>
-    {% for rating in ratings_list %}
-    {% if rating.deck_id == deck.id %}
-    <p><b>Rating:</b> {{ rating.average }}/5</p>
-    {% endif %}
-    {% endfor %}
-    <p><b>Description:</b> {{ deck.description }}</p>
-    <p>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{ deck.username }}</a> at {{ deck.created_at }}</p>
-    {% endfor %}
+    <div class="content">
+
+        <h2><b>Decks</b> - showing {{ deck_list | length }} {{ 'decks' if deck_list | length > 1 else 'deck' }} on page {{ page }}</h2>
+        {% for deck in deck_list %}
+        <hr />
+        <p><b>Name:</b><a href="/deck/{{ deck.id }}"> {{ deck.name }}</a>, Cards: {{ deck.total }}</p>
+        <p><b>Categories: </b>
+        {% for category in category_list %}
+        {% if category.deck_id == deck.id %}
+        <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
+        {% endif %}
+        {% endfor %}
+        </p>
+        {% for rating in ratings_list %}
+        {% if rating.deck_id == deck.id %}
+        <p><b>Rating:</b> {{ rating.average }}/5</p>
+        {% endif %}
+        {% endfor %}
+        <p><b>Description:</b> {{ deck.description }}</p>
+        <p>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{ deck.username }}</a> at {{ deck.created_at }}</p>
+        {% endfor %}
+    </div>
     <p>
     <a href="/{{ page - 1 }}">&lt;&lt;</a>
     Page {{ page }}/{{ page_count }}

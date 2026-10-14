@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <head>
     <title>{{deck.name}}</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h1>{{deck.name}}</h1>
-    <h2>by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
+    <div class="header">
+        <h1>{{deck.name}}</h1>
+    </div>
+    <h2>Created by <a href="/user/{{ deck.user_id }}/{{ deck.username }}">{{deck.username}}</a></h2>
     <h3>Rating: 
     {% if ratings|length > 0 %}
-    <a>{{ ratings.average }}/5 ({{ ratings.count }} ratings)</a>
+    <span>{{ ratings.average }}/5 ({{ ratings.count }} ratings)</span>
     {% elif ratings|length == 0 %}
-    <a>No ratings yet</a>
+    <span>No ratings yet</span>
     {% endif %}
     </h3>
     <p>created at {{deck.created_at}}</p>
@@ -25,14 +28,18 @@
         <input type="submit" id="edit_categories" value="Edit categories"/>
     </form>
     {% endif %}
-    <p>Cards:</p>
+    <div class="content">
+        <p>Cards:</p>
 
-    {% for card in cards %}
-    <hr />
-    <p>
-        question: {{card.question}} <|> answer: {{card.answer}}
-    </p>
-    {% endfor %}
+        {% for card in cards %}
+        <hr />
+        <div class="card">
+            <div class="question-answer">
+                <span>question: {{ card.question }} <|> answer: {{ card.answer }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     <p>
         <a href="/deck/{{ deck.id }}/{{ page - 1 }}">&lt;&lt;</a>
         Page {{ page }}/{{ page_count }}
@@ -40,12 +47,13 @@
     </p>
     <hr />    
 
+    <div class="nav">
     {% if session["user_id"] == deck.user_id %}
-    <a href="/edit_deck/{{ deck.id }}">Edit deck</a>
+    <a class="btn" href="/edit_deck/{{ deck.id }}">Edit deck</a>
     <p></p>
-    <a href="/delete_deck/{{ deck.id }}/verification">Delete</a>
+    <a class="btn" href="/delete_deck/{{ deck.id }}/verification">Delete</a>
     {% endif %}
-
+    </div>
     {% if session["user_id"] and session["user_id"] != deck.user_id %}
     <form action="/add_rating/{{ deck.id }}" method="post">
         <label for="rating">Rate this deck (1-5):</label><br/>
@@ -58,5 +66,7 @@
     {% endfor %}
     {% endif %}
     <p></p>
-    <a href="/">Back to frontpage</a>
+    <div class="nav">
+        <a class="btn" href="/">Back to frontpage</a>
+    </div>
 </body>
