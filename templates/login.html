@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <head>
     <title>Login page</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h2><b>Log in:</b></h2>
+    <div class="header">
+        <h2><b>Log in:</b></h2>
+    </div>
     {% for message in get_flashed_messages() %}
     <p>{{ message }}</p>
     {% endfor %}
-    <form action="/login" method="post">
-        <p>
-        <label for="username">Enter username:</label><br />
-        <input type="text" id="username" name="username" required/>
-        </p>
-        <p>
-        <label for="password">Enter password:</label><br />
-        <input type="password" id="password" name="password" required/>
-        </p>
-        <input type="submit" value="Log in"/>
-    </form>
-    <p><a href="/">Go back</a></p>
+    <div class="content">
+        <form action="/login" method="post">
+            <p>
+            <label for="username">Enter username:</label><br />
+            <input type="text" id="username" name="username" required/>
+            </p>
+            <p>
+            <label for="password">Enter password:</label><br />
+            <input type="password" id="password" name="password" required/>
+            </p>
+            <input type="submit" value="Log in"/>
+        </form>
+    </div>
+    <p><a href="/" class="btn">Go back</a></p>
 </body>
 </html>

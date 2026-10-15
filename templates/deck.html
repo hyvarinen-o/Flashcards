@@ -17,7 +17,7 @@
     {% endif %}
     </h3>
     <p>created at {{deck.created_at}}</p>
-    <a>Categories:</a>
+    <span>Categories:</span>
     {% for category in categories %}
     <span style="white-space: nowrap;"><a href="/category/{{ category.category }}">{{ category.category }}</a> /</span>
     {% endfor %}
@@ -41,19 +41,21 @@
         {% endfor %}
     </div>
     <p>
-        <a href="/deck/{{ deck.id }}/{{ page - 1 }}">&lt;&lt;</a>
+        <a href="/deck/{{ deck.id }}/{{ page - 1 }}" class="btn">&lt;&lt;</a>
         Page {{ page }}/{{ page_count }}
-        <a href="/deck/{{ deck.id }}/{{ page + 1 }}">&gt;&gt;</a>
+        <a href="/deck/{{ deck.id }}/{{ page + 1 }}" class="btn">&gt;&gt;</a>
     </p>
     <hr />    
 
-    <div class="nav">
     {% if session["user_id"] == deck.user_id %}
+    <p><b>Deck management</b></p>
+    <div class="nav">
     <a class="btn" href="/edit_deck/{{ deck.id }}">Edit deck</a>
     <p></p>
     <a class="btn" href="/delete_deck/{{ deck.id }}/verification">Delete</a>
-    {% endif %}
     </div>
+    <hr/>
+    {% endif %}
     {% if session["user_id"] and session["user_id"] != deck.user_id %}
     <form action="/add_rating/{{ deck.id }}" method="post">
         <label for="rating">Rate this deck (1-5):</label><br/>

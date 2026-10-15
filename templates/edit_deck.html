@@ -1,72 +1,79 @@
 <!DOCTYPE html>
 <head>
     <title>Edit deck</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h1><b>Edit deck</b></h1>
-    <a href="/deck/{{ deck.id }}" type="button">Go back</a>
+    <div class="header">
+        <h1><b>Edit deck</b></h1>
+    </div>
+    <a href="/deck/{{ deck.id }}" class="btn">Go back</a>
     <hr />
     <p></p>
-    <form action="/edit_deck_name_and_description/{{ deck.id }}" method="post">
-        <label for="deck_name">Edit deck name:</label><br />
-        <input type="text" id="deck_name" name="deck_name" value="{{ deck.name }}" required maxlength="50"/>
-        <p></p>
-        <label for="description">Edit description:</label><br />
-        <textarea type="textarea" id="description" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
-        <br />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="Submit changes" />
-    </form>
+    <div class="content">
+        <form action="/edit_deck_name_and_description/{{ deck.id }}" method="post">
+            <label for="deck_name">Edit deck name:</label><br />
+            <input type="text" id="deck_name" name="deck_name" value="{{ deck.name }}" required maxlength="50"/>
+            <p></p>
+            <label for="description">Edit description:</label><br />
+            <textarea type="textarea" id="description" name="description" rows="5" cols="40" required maxlength="400">{{ deck.description }}</textarea>
+            <br />
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+            <input type="submit" value="Submit changes" />
+        </form>
+    </div>
     
     <h4><b>{{ get_flashed_messages()[0] }}</b></h4>
-
-    <h3>Cards in deck:</h3>
-    {% for card in cards %}
-    <hr />
-    {% if card.id != card_id %}
-    <p>Question: {{ card.question }}, Answer: {{ card.answer }}</p>
-    <form action="/edit_card/delete/{{ card.id }}" method="post">
-        <input type="submit" value="delete" />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-    </form>
-    <form action="/edit_card/edit/{{ card.deck_id }}/{{ page }}/{{ page_count }}/{{ card.id }}" method="post">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="edit" />
-    </form>
-    {% elif card.id == card_id %}
-        {% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
-    {% endfor %}
-    <form action="/edit_card/update/{{ deck.id }}/{{ card.id }}" method="post">
-        <label for="edit_question_{{ card.id }}">Question:</label>
-        <input type="text" id="edit_question_{{ card.id }}" value="{{card.question}}" name="question" required maxlength="100">
-        <label for="edit_answer_{{ card.id }}">Answer:</label>
-        <input type="text" id="edit_answer_{{ card.id }}" value="{{card.answer}}" name="answer" required maxlength="300"/>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="Submit"/>
-    </form>
-    {% endif %}
-    {% endfor %}
-    <p>
-        <a href="/edit_deck/{{ deck.id }}/{{ page - 1 }}">&lt;&lt;</a>
-        Sivu {{ page }}/{{ page_count }}
-        <a href="/edit_deck/{{ deck.id }}/{{ page + 1 }}">&gt;&gt;</a>
-    </p>
-    <hr />
-
-    <h3>Add new card:</h3>
-    <form action="/add_card" method="post">
+    <div class="content">
+        <h3>Edit cards in deck:</h3>
+        {% for card in cards %}
+        <hr />
+        {% if card.id != card_id %}
+        <p>Question: {{ card.question }}, Answer: {{ card.answer }}</p>
+        <form action="/edit_card/delete/{{ card.id }}" method="post">
+            <input type="submit" value="delete" />
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+        </form>
+        <form action="/edit_card/edit/{{ card.deck_id }}/{{ page }}/{{ page_count }}/{{ card.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+            <input type="submit" value="edit" />
+        </form>
+        {% elif card.id == card_id %}
+            {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+        {% endfor %}
+        <form action="/edit_card/update/{{ deck.id }}/{{ card.id }}" method="post">
+            <label for="edit_question_{{ card.id }}">Question:</label>
+            <input type="text" id="edit_question_{{ card.id }}" value="{{card.question}}" name="question" required maxlength="100">
+            <label for="edit_answer_{{ card.id }}">Answer:</label>
+            <input type="text" id="edit_answer_{{ card.id }}" value="{{card.answer}}" name="answer" required maxlength="300"/>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+            <input type="submit" value="Submit"/>
+        </form>
+        {% endif %}
+        {% endfor %}
         <p>
-        <label for="new_question">Question:</label><br>
-        <input type="text" id="new_question" name="question" required maxlength="60"/>
+            <a href="/edit_deck/{{ deck.id }}/{{ page - 1 }}" class="btn">&lt;&lt;</a>
+            Sivu {{ page }}/{{ page_count }}
+            <a href="/edit_deck/{{ deck.id }}/{{ page + 1 }}" class="btn">&gt;&gt;</a>
         </p>
-        <p>
-        <label for="new_answer">Answer:</label><br>
-        <input type="text" id="new_answer" name="answer" required maxlength="60"/>
-        </p>
-        <input type="hidden" value="{{ deck.id }}" name="deck_id" />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="Add card"/>
-    </form>
+        <hr />
+    </div>
+    <div class="content">
+        <h3>Add new card:</h3>
+        <form action="/add_card" method="post">
+            <p>
+            <label for="new_question">Question:</label><br>
+            <input type="text" id="new_question" name="question" required maxlength="60"/>
+            </p>
+            <p>
+            <label for="new_answer">Answer:</label><br>
+            <input type="text" id="new_answer" name="answer" required maxlength="60"/>
+            </p>
+            <input type="hidden" value="{{ deck.id }}" name="deck_id" />
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+            <input type="submit" value="Add card"/>
+        </form>
+    </div>
 </body>

@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h2><b>Register</b></h2>
+    <div class="header">
+        <h2><b>Register</b></h2>
+    </div>
     {% for message in get_flashed_messages() %}
     <p><b>{{ message }}</b></p>
     {% endfor %}
-    <form action="/register" method="post">
-        <p>
-        <label for="username">Enter username (max 30 characters)</label><br />
-        <input type="text" id="username" name="username" required maxlength="30" value="{{ filled.username }}"/>
-        </p>
-        <p>
-        <label for="password1">Enter password (max 100 characters)</label><br />
-        <input type="password" id="password1" name="password1" required maxlength="100"/>
-        </p>
-        <p>
-        <label for="password2">Enter password again</label><br />
-        <input type="password" id="password2" name="password2" required maxlength="100"/>
-        </p>
-        <input type="submit" value="Create" />
-    </form>
-    <p><a href="/">Go back</a></p>
+    <div class="content">
+        <form action="/register" method="post">
+            <p>
+            <label for="username">Enter username (max 30 characters)</label><br />
+            <input type="text" id="username" name="username" required maxlength="30" value="{{ filled.username }}"/>
+            </p>
+            <p>
+            <label for="password1">Enter password (max 100 characters)</label><br />
+            <input type="password" id="password1" name="password1" required maxlength="100"/>
+            </p>
+            <p>
+            <label for="password2">Enter password again</label><br />
+            <input type="password" id="password2" name="password2" required maxlength="100"/>
+            </p>
+            <input type="submit" value="Create" />
+        </form>
+    </div>
+    <p><a href="/" class="btn">Go back</a></p>
 </body>
 </html>

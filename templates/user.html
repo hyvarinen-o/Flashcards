@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <head>
     <title>Flashcards - {{ user.username }}</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h2>User {{ user.username }}</h2>
-    <p>Join date {{ user.created_at }}</p>
-    <p>Decks created: {{ decks|length }}</p>
-    <h3>{{ user.username }}'s decks</h3>
-    {% for deck in decks %}
+    <div class="header">
+        <h2>User: {{ user.username }}</h2>
+        <p>Join date: {{ user.created_at }}</p>
+        <p>Decks created: {{ decks|length }}</p>
+    </div>
+    <div class="content">
+        <h3>Decks by {{ user.username }}</h3>
+        {% for deck in decks %}
+        <hr />
+        <a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
+        <p><b>Description:</b> {{ deck.description }}</p>
+        <p>by {{ user   .username }} at {{ deck.created_at }}</p>
+        {% endfor %}
+        <p>
+            <a href="/user/{{ user.id }}/{{ user.username }}/{{ page - 1 }}" class="btn">&lt;&lt;</a>
+            Sivu {{ page }}/{{ page_count }}
+            <ahref="/user/{{ user.id }}/{{ user.username }}/{{ page + 1 }}" class="btn">&gt;&gt;</a>
+        </p>
+    </div>
     <hr />
-    <a href="/deck/{{ deck.id }}">{{ deck.name }}</a> - Cards: {{ deck.total }}</p>
-    <p><b>Description:</b> {{ deck.description }}</p>
-    <p>by {{ user   .username }} at {{ deck.created_at }}</p>
-    {% endfor %}
-    <p>
-        <a href="/user/{{ user.id }}/{{ user.username }}/{{ page - 1 }}">&lt;&lt;</a>
-        Sivu {{ page }}/{{ page_count }}
-        <a href="/user/{{ user.id }}/{{ user.username }}/{{ page + 1 }}">&gt;&gt;</a>
-    </p>
-    <hr />
-    <a href="/">Back to Frontpage</a>
+    <a href="/" class="btn">Back to Frontpage</a>
 </body>

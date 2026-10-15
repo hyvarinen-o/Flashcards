@@ -1,10 +1,15 @@
 <!DOCTYPE html>
+{% if deck_list != [] %}
 <head>
     <title>{{ deck_list[0][0] }}</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h2>Decks in category: {{ deck_list[0][0] }}</h2>
+    <div class="header">
+        <h2>Decks in category: {{ deck_list[0][0] }}</h2>
+    </div>
+    <div class="content">
     <h3>{{ deck_list[:] | length }} decks found</h3>
     {% for deck in deck_list %}
     <hr />
@@ -12,7 +17,18 @@
     <p><b>Description:</b> {{ deck.description }}</p>
     <p>by {{ deck.username }} at {{ deck.created_at }}</p>
     {% endfor %}
+    </div>
     <p></p>
-    <a href="/">Go back to Frontpage</a>
-
+    <a href="/" class="btn">Go back to Frontpage</a>
 </body>
+
+{% else %}
+<head>
+    <title>No decks in category</title>
+    <link rel="stylesheet" href="/static/main.css"/>
+</head>
+<body>
+    <h2>No decks in category</h2>
+    <a href="/" class="btn">Back to frontpage</a>
+</body>
+{% endif %}

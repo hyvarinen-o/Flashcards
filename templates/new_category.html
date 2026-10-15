@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <head>
     <title>Create category</title>
+    <link rel="stylesheet" href="/static/main.css"/>
 </head>
 
 <body>
-    <h2>Create a new category</h2>
-    <p>Max 50 characters</p>
-    <form action="/create_new_category/{{ deck_id }}" method="post">
-        <label for="category">Category name:</label><br />
-        <input type="text" id="category" name="category" maxlength="50" required />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
-        <input type="submit" value="Submit">
-    </form>
-    <b>{{ get_flashed_messages()[0] }}</b><br/>
-    <a href="/edit_categories/{{ deck_id }}">Go back</a>
+    <div class="header">
+        <h2>Create a new category</h2>
+    </div>
+    <div class="content">
+        <p>Max 50 characters</p>
+        <form action="/create_new_category/{{ deck_id }}" method="post">
+            <label for="category">Category name:</label><br />
+            <input type="text" id="category" name="category" maxlength="50" required />
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"/>
+            <input type="submit" value="Submit">
+        </form>
+    <b>{{ get_flashed_messages()[0] }}</b>
+    </div>
+    <br/>
+    <a href="/edit_categories/{{ deck_id }}" class="btn">Go back</a>
 </body>
