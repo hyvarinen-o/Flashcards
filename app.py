@@ -1,10 +1,16 @@
 import datetime, math
+
 from flask import Flask
-from flask import redirect, render_template, request, abort
-from flask import session, flash
+from flask import (redirect,
+                   render_template,
+                   request,
+                   session,
+                   flash,
+                   abort)
+
 from werkzeug.security import generate_password_hash
-import decks, users
-import config
+import decks, users, config
+
 from utils import (
     require_login,
     verify_csrf,
@@ -18,11 +24,11 @@ app.secret_key = config.secret_key
 
 
 @app.errorhandler(404)
-def not_found(e):
+def not_found():
     return render_template("404.html"), 404
 
 @app.errorhandler(403)
-def no_access(e):
+def no_access():
     return render_template("403.html"), 403
 
 @app.route("/")
@@ -56,7 +62,7 @@ def register():
         username = request.form["username"].rstrip()
         password1 = request.form["password1"].rstrip()
         password2 = request.form["password2"].rstrip()
-        
+
         if not username or not password1 or not password2 or len(username) > 30 or len(password1) > 100:
             flash("ERROR: Invalid username or password")
             return render_template("register.html", filled={})
@@ -142,7 +148,7 @@ def create_deck():
     description = request.form["description"].strip()
     questions = request.form.getlist("questions[]")
     answers = request.form.getlist("answers[]")
-    
+
     if not validate_deck_parameters(name, description):
         flash("Invalid name or description")
         return redirect("/new_deck")
@@ -162,7 +168,7 @@ def create_deck():
         for card in cards:
             decks.add_card(card["question"].rstrip(), card["answer"].rstrip(), deck_id)
         return redirect("/deck/" + str(deck_id))
-        
+
     date = datetime.datetime.now().date()
     deck_id = decks.create_deck(name, description, session["user_id"], date)
     return redirect("/deck/" + str(deck_id))
@@ -200,11 +206,11 @@ def add_card():
     question = request.form["question"].rstrip()
     answer = request.form["answer"].rstrip()
     deck_id = request.form["deck_id"]
-    
+
     if not validate_card_parameters(question, answer):
         flash("Card not added: invalid card parameters")
         return redirect("/edit_deck/" + str(deck_id))
-        
+
     decks.add_card(question, answer, deck_id)
     return redirect("/edit_deck/" + str(deck_id))
 
@@ -242,7 +248,7 @@ def edit_deck_name(deck_id):
 
     name = request.form["deck_name"].rstrip()
     description = request.form["description"].rstrip()
-    
+
     if not validate_deck_parameters(name, description):
         flash("Changes not applied: invalid name or description")
         return redirect("/edit_deck/" + str(deck_id))
@@ -258,13 +264,18 @@ def delete_card(card_id):
     deck_id = decks.delete_card(card_id)
     return redirect("/edit_deck/" + str(deck_id))
 
-@app.route("/edit_card/edit/<int:deck_id>/<int:page>/<int:page_count>/<int:card_id>", methods=["POST"])
+@app.route("/edit_card/edit/<int:deck_id>/<int:page>/<int:page_count>/<int:card_id>",
+           methods=["POST"])
 def edit_card(deck_id, page, page_count, card_id):
     require_login()
     verify_csrf()
     cards = decks.get_cards(deck_id, page, 5)
     deck = decks.get_deck(deck_id)
-    return render_template("edit_deck.html", page=page, page_conut=page_count, cards=cards, deck=deck, card_id=card_id)
+    return render_template("edit_deck.html",
+                           page=page,
+                           page_conut=page_count,
+                           cards=cards, deck=deck,
+                           card_id=card_id)
 
 @app.route("/edit_card/update/<int:deck_id>/<int:card_id>", methods=["POST"])
 def update_card(deck_id, card_id):
@@ -272,11 +283,11 @@ def update_card(deck_id, card_id):
     verify_csrf()
     q = request.form["question"].rstrip()
     a = request.form["answer"].rstrip()
-    
+
     if not validate_card_parameters(q, a):
         flash("Changes not applied: invalid card parameters")
         return redirect("/edit_deck/" + str(deck_id))
-        
+
     deck_id = decks.update_card(card_id, q, a)
     return redirect("/edit_deck/" + str(deck_id))
 
@@ -314,10 +325,14 @@ def user_page(user_id, username, page=1):
         return redirect("/user/" + str(user_id) + "/" + str(username) + "/1")
     if page > page_count:
         return redirect("/user/" + str(user_id) + "/" + str(username) + "/" + str(page_count))
-    
+
     user = users.get_user(username)
     deck_list = decks.get_users_decks(user_id, page, page_size)
-    return render_template("user.html", page=page, page_count=page_count, user=user, decks=deck_list)
+    return render_template("user.html",
+                           page=page,
+                           page_count=page_count,
+                           user=user,
+                           decks=deck_list)
 
 @app.route("/edit_categories/<int:deck_id>")
 def category_edit_page(deck_id):
@@ -325,7 +340,7 @@ def category_edit_page(deck_id):
     deck = decks.get_deck(deck_id)
     if not deck or deck["user_id"] != session["user_id"]:
         abort(403)
-    
+
     categories = decks.get_categories()
     decks_categories = decks.get_categories_for_deck(deck_id)
     return render_template("category_edit.html",
